@@ -4,20 +4,23 @@ import { AuthenticationParams } from '@domain/usecases'
 import { InvalidCredentialsError, UnexpectedError } from '@domain/errors'
 import { mock } from 'jest-mock-extended'
 import { faker } from '@faker-js/faker'
+import { AccountModel } from '@domain/model'
 
 describe('RemoteAuthentication', () => {
   let sut: RemoteAuthentication
   let url: string
   let authParams: AuthenticationParams
-  const httpPostClientSpy = mock<HttpPostClient>()
+  let accessToken: string
+  const httpPostClientSpy = mock<HttpPostClient<AuthenticationParams, AccountModel>>()
 
   beforeAll(() => {
-    httpPostClientSpy.post.mockResolvedValue({ statusCode: HttpStatusCode.ok })
     url = faker.internet.url()
     authParams = {
       email: faker.internet.email(),
       password: faker.internet.password()
     }
+    accessToken = faker.random.alphaNumeric(32)
+    httpPostClientSpy.post.mockResolvedValue({ statusCode: HttpStatusCode.ok, body: { accessToken } })
   })
 
   beforeEach(() => {
@@ -60,5 +63,11 @@ describe('RemoteAuthentication', () => {
     const promise = sut.auth(authParams)
 
     await expect(promise).rejects.toThrow(new UnexpectedError())
+  })
+
+  it('should return an account on succes', async () => {
+    const account = await sut.auth(authParams)
+
+    expect(account).toEqual({ accessToken })
   })
 })
