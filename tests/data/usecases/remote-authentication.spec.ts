@@ -1,6 +1,7 @@
-import { HttpPostClient } from '@data/protocols'
+import { HttpPostClient, HttpStatusCode } from '@data/protocols'
 import { RemoteAuthentication } from '@data/usecases'
 import { AuthenticationParams } from '@domain/usecases'
+import { InvalidCredentialsError } from '@domain/errors/invalid-credentias-error'
 import { mock } from 'jest-mock-extended'
 import { faker } from '@faker-js/faker'
 
@@ -11,6 +12,7 @@ describe('RemoteAuthentication', () => {
   const httpPostClientSpy = mock<HttpPostClient>()
 
   beforeAll(() => {
+    httpPostClientSpy.post.mockResolvedValue({ statusCode: HttpStatusCode.noContent })
     url = faker.internet.url()
     authParams = {
       email: faker.internet.email(),
@@ -26,5 +28,13 @@ describe('RemoteAuthentication', () => {
     await sut.auth(authParams)
 
     expect(httpPostClientSpy.post).toHaveBeenCalledWith({ url, body: authParams })
+  })
+
+  it('should throw InvalidCredentialsError if HttpPostClient returns 401', async () => {
+    httpPostClientSpy.post.mockResolvedValueOnce({ statusCode: HttpStatusCode.unauthorized })
+
+    const promise = sut.auth(authParams)
+
+    await expect(promise).rejects.toThrow(new InvalidCredentialsError())
   })
 })
