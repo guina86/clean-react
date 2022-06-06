@@ -1,10 +1,11 @@
 import { HttpPostClient } from '@data/protocols'
 import { RemoteAuthentication } from '@data/usecases'
 import { mock } from 'jest-mock-extended'
+import { faker } from '@faker-js/faker'
 
 describe('RemoteAuthentication', () => {
   let sut: RemoteAuthentication
-  const url = 'any_url'
+  const url = faker.internet.url()
   const httpPostClientSpy = mock<HttpPostClient>()
 
   beforeEach(() => {
