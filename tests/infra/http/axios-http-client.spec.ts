@@ -17,8 +17,8 @@ describe('AxiosHttpClient', () => {
     sut = new AxiosHttpClient()
   })
 
-  it('should call axios with correct url', async () => {
+  it('should call axios with correct url and verb', async () => {
     await sut.post({ url })
-    expect(mockedAxios).toHaveBeenCalledWith(url)
+    expect(mockedAxios.post).toHaveBeenCalledWith(url)
   })
 })
