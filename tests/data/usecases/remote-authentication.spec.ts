@@ -15,6 +15,6 @@ describe('RemoteAuthentication', () => {
   it('should ', async () => {
     await sut.auth()
 
-    expect(httpPostClientSpy.post).toHaveBeenCalledWith(url)
+    expect(httpPostClientSpy.post).toHaveBeenCalledWith({ url })
   })
 })
