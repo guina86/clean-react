@@ -1,5 +1,5 @@
 module.exports = {
-  roots: ['<rootDir>/src'],
+  roots: ['<rootDir>/src', '<rootDir>/tests'],
   collectCoverageFrom: [
     '<rootDir>/src/**/*.{ts,tsx}'
   ],
@@ -7,5 +7,10 @@ module.exports = {
   testEnvironment: 'node',
   transform: {
     '^.+\\.tsx?$': '@swc/jest'
+  },
+  moduleNameMapper: {
+    '@tests/(.*)': '<rootDir>/tests/$1',
+    '@domain/(.*)': '<rootDir>/src/domain/$1',
+    '@data/(.*)': '<rootDir>/src/data/$1'
   }
 }
