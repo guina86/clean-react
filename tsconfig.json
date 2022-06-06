@@ -15,6 +15,7 @@
     "paths": {
       "@domain/*": ["domain/*"],
       "@data/*": ["data/*"],
+      "@infra/*": ["infra/*"],
       "@tests/*": ["../tests/*"]
     },
     "allowJs": true,
