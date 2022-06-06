@@ -1,7 +1,7 @@
 import { HttpPostClient, HttpStatusCode } from '@data/protocols'
 import { RemoteAuthentication } from '@data/usecases'
 import { AuthenticationParams } from '@domain/usecases'
-import { InvalidCredentialsError } from '@domain/errors/invalid-credentias-error'
+import { InvalidCredentialsError, UnexpectedError } from '@domain/errors'
 import { mock } from 'jest-mock-extended'
 import { faker } from '@faker-js/faker'
 
@@ -12,7 +12,7 @@ describe('RemoteAuthentication', () => {
   const httpPostClientSpy = mock<HttpPostClient>()
 
   beforeAll(() => {
-    httpPostClientSpy.post.mockResolvedValue({ statusCode: HttpStatusCode.noContent })
+    httpPostClientSpy.post.mockResolvedValue({ statusCode: HttpStatusCode.ok })
     url = faker.internet.url()
     authParams = {
       email: faker.internet.email(),
@@ -36,5 +36,29 @@ describe('RemoteAuthentication', () => {
     const promise = sut.auth(authParams)
 
     await expect(promise).rejects.toThrow(new InvalidCredentialsError())
+  })
+
+  it('should throw UnexpectedError if HttpPostClient returns 400', async () => {
+    httpPostClientSpy.post.mockResolvedValueOnce({ statusCode: HttpStatusCode.badRequest })
+
+    const promise = sut.auth(authParams)
+
+    await expect(promise).rejects.toThrow(new UnexpectedError())
+  })
+
+  it('should throw UnexpectedError if HttpPostClient returns 404', async () => {
+    httpPostClientSpy.post.mockResolvedValueOnce({ statusCode: HttpStatusCode.notFound })
+
+    const promise = sut.auth(authParams)
+
+    await expect(promise).rejects.toThrow(new UnexpectedError())
+  })
+
+  it('should throw UnexpectedError if HttpPostClient returns 500', async () => {
+    httpPostClientSpy.post.mockResolvedValueOnce({ statusCode: HttpStatusCode.serverError })
+
+    const promise = sut.auth(authParams)
+
+    await expect(promise).rejects.toThrow(new UnexpectedError())
   })
 })
