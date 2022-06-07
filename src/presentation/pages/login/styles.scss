@@ -1,4 +1,4 @@
-@import '../../styles/colors.scss';
+@import '@presentation/styles/colors.scss';
 
 * {
   font-family: 'Roboto', sans-serif;
@@ -50,24 +50,6 @@ button {
   flex-direction: column;
   height: 100vh;
   justify-content: space-between;
-
-  .header {
-    background-color: $primary;
-    display: flex;
-    flex-direction: column;
-    border-top: 4rem solid $primaryDark;
-    align-items: center;
-
-    img {
-      margin-top: 4rem;
-    }
-
-    h1 {
-      font-size: 1.6rem;
-      color: $white;
-      margin: 1.6rem 0rem 4rem;
-    }
-  }
 
   .form {
     display: flex;
@@ -136,8 +118,4 @@ button {
     }
   }
 
-  .footer {
-    background-color: $primary;
-    height: 5rem;
-  }
 }
