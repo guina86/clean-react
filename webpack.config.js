@@ -10,21 +10,47 @@ module.exports = {
     filename: 'bundle.js'
   },
   resolve: {
-    extensions: ['.ts', '.tsx', '.js'],
+    extensions: ['.ts', '.tsx', '.js', 'scss'],
     alias: {
-      '@': path.join(__dirname, 'src')
+      '@presentation': path.join(__dirname, 'src/presentation')
     }
   },
+  module: {
+    rules: [{
+      test: /\.tsx?$/,
+      loader: 'ts-loader',
+      exclude: /node_modules/
+    }, {
+      test: /\.scss$/,
+      use: [{
+        loader: 'style-loader'
+      }, {
+        loader: 'css-loader',
+        options: {
+          modules: true
+        }
+      }, {
+        loader: 'sass-loader'
+      }
+      ]
+    }
+    ]
+  },
   devServer: {
-    contentBase: './public',
-    writeToDisk: true,
-    historyApiFallback: true
+    devMiddleware: {
+      writeToDisk: true
+    },
+    static: {
+      directory: './public'
+    },
+    historyApiFallback: true,
+    port: 8080
   },
   externals: {
     react: 'React',
     'react-dom': 'ReactDOM'
   },
-  plubins: [
+  plugins: [
     new CleanWebpackPlugin()
   ]
 }

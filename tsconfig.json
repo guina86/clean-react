@@ -17,6 +17,7 @@
       "@data/*": ["data/*"],
       "@infra/*": ["infra/*"],
       "@main/*": ["main/*"],
+      "@presentation/*": ["presentation/*"],
       "@tests/*": ["../tests/*"]
     },
     "allowJs": true,
