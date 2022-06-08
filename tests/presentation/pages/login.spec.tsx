@@ -34,16 +34,12 @@ describe('Login Component', () => {
   it('should call validation with correct email', () => {
     const emailInput = sut.getByPlaceholderText('Digite seu e-mail')
     fireEvent.input(emailInput, { target: { value: 'any_email' } })
-    expect(validationSpy.validate).toHaveBeenCalledWith({
-      email: 'any_email'
-    })
+    expect(validationSpy.validate).toHaveBeenCalledWith('email', 'any_email')
   })
 
   it('should call validation with correct email', () => {
     const passwordInput = sut.getByPlaceholderText('Digite sua senha')
     fireEvent.input(passwordInput, { target: { value: 'any_password' } })
-    expect(validationSpy.validate).toHaveBeenCalledWith({
-      password: 'any_password'
-    })
+    expect(validationSpy.validate).toHaveBeenCalledWith('password', 'any_password')
   })
 })
