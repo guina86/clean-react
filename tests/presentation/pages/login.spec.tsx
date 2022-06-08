@@ -3,13 +3,20 @@ import { cleanup, render, RenderResult, fireEvent } from '@testing-library/react
 import Login from '@presentation/pages/login'
 import mock from 'jest-mock-extended/lib/Mock'
 import { Validation } from '@presentation/protocols/validation'
+import { faker } from '@faker-js/faker'
 
 describe('Login Component', () => {
   let sut: RenderResult
+  let email: string
+  let password: string
+  let errorMessage: string
   const validationSpy = mock<Validation>()
 
   beforeAll(() => {
-    validationSpy.validate.mockReturnValue('errorMessage')
+    errorMessage = faker.random.words(2)
+    email = faker.internet.email()
+    password = faker.internet.password()
+    validationSpy.validate.mockReturnValue(errorMessage)
   })
 
   beforeEach(() => {
@@ -24,7 +31,7 @@ describe('Login Component', () => {
     const submitbutton = sut.getByRole('button') as HTMLButtonElement
     expect(submitbutton.disabled).toBe(true)
     const emailStatus = sut.getByTestId('email-status')
-    expect(emailStatus.title).toBe('Campo obrigatório')
+    expect(emailStatus.title).toBe(errorMessage)
     expect(emailStatus.textContent).toBe('🔴')
     const passwordStatus = sut.getByTestId('password-status')
     expect(passwordStatus.title).toBe('Campo obrigatório')
@@ -33,13 +40,21 @@ describe('Login Component', () => {
 
   it('should call validation with correct email', () => {
     const emailInput = sut.getByPlaceholderText('Digite seu e-mail')
-    fireEvent.input(emailInput, { target: { value: 'any_email' } })
-    expect(validationSpy.validate).toHaveBeenCalledWith('email', 'any_email')
+    fireEvent.input(emailInput, { target: { value: email } })
+    expect(validationSpy.validate).toHaveBeenCalledWith('email', email)
   })
 
   it('should call validation with correct email', () => {
     const passwordInput = sut.getByPlaceholderText('Digite sua senha')
-    fireEvent.input(passwordInput, { target: { value: 'any_password' } })
-    expect(validationSpy.validate).toHaveBeenCalledWith('password', 'any_password')
+    fireEvent.input(passwordInput, { target: { value: password } })
+    expect(validationSpy.validate).toHaveBeenCalledWith('password', password)
+  })
+
+  it('should show email error if Validation fails', () => {
+    const emailInput = sut.getByPlaceholderText('Digite seu e-mail')
+    fireEvent.input(emailInput, { target: { value: email } })
+    const emailStatus = sut.getByTestId('email-status')
+    expect(emailStatus.title).toBe(errorMessage)
+    expect(emailStatus.textContent).toBe('🔴')
   })
 })
