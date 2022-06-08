@@ -38,4 +38,12 @@ describe('Login Component', () => {
       email: 'any_email'
     })
   })
+
+  it('should call validation with correct email', () => {
+    const passwordInput = sut.getByPlaceholderText('Digite sua senha')
+    fireEvent.input(passwordInput, { target: { value: 'any_password' } })
+    expect(validationSpy.validate).toHaveBeenCalledWith({
+      password: 'any_password'
+    })
+  })
 })
