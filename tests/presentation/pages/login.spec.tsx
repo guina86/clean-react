@@ -21,6 +21,7 @@ describe('Login Component', () => {
 
   beforeEach(() => {
     sut = render(<Login validation={validationSpy} />)
+    jest.clearAllMocks()
   })
 
   afterEach(cleanup)
@@ -34,7 +35,7 @@ describe('Login Component', () => {
     expect(emailStatus.title).toBe(errorMessage)
     expect(emailStatus.textContent).toBe('🔴')
     const passwordStatus = sut.getByTestId('password-status')
-    expect(passwordStatus.title).toBe('Campo obrigatório')
+    expect(passwordStatus.title).toBe(errorMessage)
     expect(passwordStatus.textContent).toBe('🔴')
   })
 
@@ -56,5 +57,13 @@ describe('Login Component', () => {
     const emailStatus = sut.getByTestId('email-status')
     expect(emailStatus.title).toBe(errorMessage)
     expect(emailStatus.textContent).toBe('🔴')
+  })
+
+  it('should show password error if Validation fails', () => {
+    const passwordInput = sut.getByPlaceholderText('Digite sua senha')
+    fireEvent.input(passwordInput, { target: { value: password } })
+    const passwordStatus = sut.getByTestId('password-status')
+    expect(passwordStatus.title).toBe(errorMessage)
+    expect(passwordStatus.textContent).toBe('🔴')
   })
 })
