@@ -94,4 +94,16 @@ describe('Login Component', () => {
     const submitButton = sut.getByRole('button') as HTMLButtonElement
     expect(submitButton.disabled).toBe(false)
   })
+
+  it('should show spinner on submit', async () => {
+    validationSpy.validate.mockReturnValue('')
+    const emailInput = sut.getByPlaceholderText('Digite seu e-mail')
+    const passwordInput = sut.getByPlaceholderText('Digite sua senha')
+    fireEvent.input(emailInput, { target: { value: email } })
+    fireEvent.input(passwordInput, { target: { value: password } })
+    const submitButton = sut.getByRole('button')
+    fireEvent.click(submitButton)
+    const spinner = sut.findByTestId('spinner')
+    expect(spinner).toBeTruthy()
+  })
 })
