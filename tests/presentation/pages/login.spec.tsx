@@ -126,4 +126,11 @@ describe('Login Component', () => {
     actSubmit(sut)
     expect(authenticationSpy.auth).toHaveBeenCalledTimes(1)
   })
+
+  it('should not call Authentication if form is not valid', async () => {
+    validationSpy.validate.mockReturnValue(errorMessage)
+    arrangeEmail(sut)
+    fireEvent.submit(sut.getByRole('form'))
+    expect(authenticationSpy.auth).toHaveBeenCalledTimes(0)
+  })
 })
