@@ -8,16 +8,31 @@ import { Authentication } from '@domain/usecases'
 
 describe('Login Component', () => {
   let sut: RenderResult
-  let email: string
-  let password: string
   let errorMessage: string
   const validationSpy = mock<Validation>()
   const authenticationSpy = mock<Authentication>()
+  const arrangeEmail = (sut: RenderResult, email = faker.internet.email()): string => {
+    const emailInput = sut.getByPlaceholderText('Digite seu e-mail')
+    fireEvent.input(emailInput, { target: { value: email } })
+    return email
+  }
+  const arrangePassword = (sut: RenderResult, password = faker.internet.password()): string => {
+    const passwordInput = sut.getByPlaceholderText('Digite sua senha')
+    fireEvent.input(passwordInput, { target: { value: password } })
+    return password
+  }
+  const arrangeInputs = (sut: RenderResult, emailInput?: string, passwordInput?: string): {email: string, password: string} => {
+    const email = arrangeEmail(sut, emailInput)
+    const password = arrangePassword(sut, passwordInput)
+    return { email, password }
+  }
+  const actSubmit = (sut: RenderResult): void => {
+    const submitButton = sut.getByRole('button')
+    fireEvent.click(submitButton)
+  }
 
   beforeAll(() => {
     errorMessage = faker.random.words(2)
-    email = faker.internet.email()
-    password = faker.internet.password()
     validationSpy.validate.mockReturnValue(errorMessage)
     authenticationSpy.auth.mockResolvedValue({ accessToken: faker.datatype.uuid() })
   })
@@ -43,28 +58,24 @@ describe('Login Component', () => {
   })
 
   it('should call validation with correct email', () => {
-    const emailInput = sut.getByPlaceholderText('Digite seu e-mail')
-    fireEvent.input(emailInput, { target: { value: email } })
+    const email = arrangeEmail(sut)
     expect(validationSpy.validate).toHaveBeenCalledWith('email', email)
   })
 
   it('should call validation with correct email', () => {
-    const passwordInput = sut.getByPlaceholderText('Digite sua senha')
-    fireEvent.input(passwordInput, { target: { value: password } })
+    const password = arrangePassword(sut)
     expect(validationSpy.validate).toHaveBeenCalledWith('password', password)
   })
 
   it('should show email error if Validation fails', () => {
-    const emailInput = sut.getByPlaceholderText('Digite seu e-mail')
-    fireEvent.input(emailInput, { target: { value: email } })
+    arrangeEmail(sut)
     const emailStatus = sut.getByTestId('email-status')
     expect(emailStatus.title).toBe(errorMessage)
     expect(emailStatus.textContent).toBe('🔴')
   })
 
   it('should show password error if Validation fails', () => {
-    const passwordInput = sut.getByPlaceholderText('Digite sua senha')
-    fireEvent.input(passwordInput, { target: { value: password } })
+    arrangePassword(sut)
     const passwordStatus = sut.getByTestId('password-status')
     expect(passwordStatus.title).toBe(errorMessage)
     expect(passwordStatus.textContent).toBe('🔴')
@@ -72,8 +83,7 @@ describe('Login Component', () => {
 
   it('should show valid email state if Validation succeeds', () => {
     validationSpy.validate.mockReturnValue('')
-    const emailInput = sut.getByPlaceholderText('Digite seu e-mail')
-    fireEvent.input(emailInput, { target: { value: email } })
+    arrangeEmail(sut)
     const emailStatus = sut.getByTestId('email-status')
     expect(emailStatus.title).toBe('Tudo certo!')
     expect(emailStatus.textContent).toBe('🟢')
@@ -81,8 +91,7 @@ describe('Login Component', () => {
 
   it('should show valid password state if Validation succeeds', () => {
     validationSpy.validate.mockReturnValue('')
-    const passwordInput = sut.getByPlaceholderText('Digite sua senha')
-    fireEvent.input(passwordInput, { target: { value: password } })
+    arrangePassword(sut)
     const passwordStatus = sut.getByTestId('password-status')
     expect(passwordStatus.title).toBe('Tudo certo!')
     expect(passwordStatus.textContent).toBe('🟢')
@@ -90,34 +99,23 @@ describe('Login Component', () => {
 
   it('should enable submit button if form is valid', () => {
     validationSpy.validate.mockReturnValue('')
-    const emailInput = sut.getByPlaceholderText('Digite seu e-mail')
-    const passwordInput = sut.getByPlaceholderText('Digite sua senha')
-    fireEvent.input(emailInput, { target: { value: email } })
-    fireEvent.input(passwordInput, { target: { value: password } })
+    arrangeInputs(sut)
     const submitButton = sut.getByRole('button') as HTMLButtonElement
     expect(submitButton.disabled).toBe(false)
   })
 
   it('should show spinner on submit', async () => {
     validationSpy.validate.mockReturnValue('')
-    const emailInput = sut.getByPlaceholderText('Digite seu e-mail')
-    const passwordInput = sut.getByPlaceholderText('Digite sua senha')
-    fireEvent.input(emailInput, { target: { value: email } })
-    fireEvent.input(passwordInput, { target: { value: password } })
-    const submitButton = sut.getByRole('button')
-    fireEvent.click(submitButton)
+    arrangeInputs(sut)
+    actSubmit(sut)
     const spinner = sut.findByTestId('spinner')
     expect(spinner).toBeTruthy()
   })
 
   it('should call Authentication with correct values', async () => {
     validationSpy.validate.mockReturnValue('')
-    const emailInput = sut.getByPlaceholderText('Digite seu e-mail')
-    const passwordInput = sut.getByPlaceholderText('Digite sua senha')
-    fireEvent.input(emailInput, { target: { value: email } })
-    fireEvent.input(passwordInput, { target: { value: password } })
-    const submitButton = sut.getByRole('button')
-    fireEvent.click(submitButton)
-    expect(authenticationSpy.auth).toHaveBeenCalledWith({ email, password })
+    const params = arrangeInputs(sut)
+    actSubmit(sut)
+    expect(authenticationSpy.auth).toHaveBeenCalledWith(params)
   })
 })
