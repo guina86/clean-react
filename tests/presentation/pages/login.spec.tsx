@@ -4,6 +4,7 @@ import Login from '@presentation/pages/login'
 import mock from 'jest-mock-extended/lib/Mock'
 import { Validation } from '@presentation/protocols/validation'
 import { faker } from '@faker-js/faker'
+import { Authentication } from '@domain/usecases'
 
 describe('Login Component', () => {
   let sut: RenderResult
@@ -11,16 +12,18 @@ describe('Login Component', () => {
   let password: string
   let errorMessage: string
   const validationSpy = mock<Validation>()
+  const authenticationSpy = mock<Authentication>()
 
   beforeAll(() => {
     errorMessage = faker.random.words(2)
     email = faker.internet.email()
     password = faker.internet.password()
     validationSpy.validate.mockReturnValue(errorMessage)
+    authenticationSpy.auth.mockResolvedValue({ accessToken: faker.datatype.uuid() })
   })
 
   beforeEach(() => {
-    sut = render(<Login validation={validationSpy} />)
+    sut = render(<Login validation={validationSpy} authentication={authenticationSpy}/>)
     jest.clearAllMocks()
   })
 
@@ -105,5 +108,16 @@ describe('Login Component', () => {
     fireEvent.click(submitButton)
     const spinner = sut.findByTestId('spinner')
     expect(spinner).toBeTruthy()
+  })
+
+  it('should call Authentication with correct values', async () => {
+    validationSpy.validate.mockReturnValue('')
+    const emailInput = sut.getByPlaceholderText('Digite seu e-mail')
+    const passwordInput = sut.getByPlaceholderText('Digite sua senha')
+    fireEvent.input(emailInput, { target: { value: email } })
+    fireEvent.input(passwordInput, { target: { value: password } })
+    const submitButton = sut.getByRole('button')
+    fireEvent.click(submitButton)
+    expect(authenticationSpy.auth).toHaveBeenCalledWith({ email, password })
   })
 })
