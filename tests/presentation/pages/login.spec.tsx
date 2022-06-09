@@ -118,4 +118,12 @@ describe('Login Component', () => {
     actSubmit(sut)
     expect(authenticationSpy.auth).toHaveBeenCalledWith(params)
   })
+
+  it('should call Authentication only once', async () => {
+    validationSpy.validate.mockReturnValue('')
+    arrangeInputs(sut)
+    actSubmit(sut)
+    actSubmit(sut)
+    expect(authenticationSpy.auth).toHaveBeenCalledTimes(1)
+  })
 })
