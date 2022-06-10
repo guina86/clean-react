@@ -17,5 +17,6 @@ module.exports = {
     '@main/(.*)': '<rootDir>/src/main/$1',
     '@presentation(.*)': '<rootDir>/src/presentation/$1',
     '\\.scss$': 'identity-obj-proxy'
-  }
+  },
+  setupFilesAfterEnv: ['<rootDir>/jest-setup.js']
 }
