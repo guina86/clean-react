@@ -1,5 +1,6 @@
 import { MinLengthValidation } from '@presentation/validation/validators'
 import { FieldLengthError } from '@presentation/validation/errors'
+import { faker } from '@faker-js/faker'
 
 describe('MinLengthValidation', () => {
   let sut: MinLengthValidation
@@ -8,9 +9,15 @@ describe('MinLengthValidation', () => {
     sut = new MinLengthValidation('field', 5)
   })
 
-  it('should return Error if value length less than the min', () => {
-    const error = sut.validate('123')
+  it('should return Error if value length invalid', () => {
+    const error = sut.validate(faker.random.alphaNumeric(4))
 
     expect(error).toEqual(new FieldLengthError('field', 5))
+  })
+
+  it('should return falsy if value length valid', () => {
+    const error = sut.validate(faker.random.alphaNumeric(5))
+
+    expect(error).toBeFalsy()
   })
 })
