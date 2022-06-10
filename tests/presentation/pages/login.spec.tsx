@@ -1,14 +1,15 @@
 import React from 'react'
-import { cleanup, render, RenderResult, fireEvent } from '@testing-library/react'
+import { render, RenderResult, fireEvent } from '@testing-library/react'
 import Login from '@presentation/pages/login'
 import mock from 'jest-mock-extended/lib/Mock'
 import { Validation } from '@presentation/protocols/validation'
 import { faker } from '@faker-js/faker'
 import { Authentication } from '@domain/usecases'
+import { InvalidCredentialsError } from '@domain/errors'
 
 describe('Login Component', () => {
   let sut: RenderResult
-  let errorMessage: string
+  const errorMessage = faker.random.words(2)
   const validationSpy = mock<Validation>()
   const authenticationSpy = mock<Authentication>()
   const arrangeEmail = (sut: RenderResult, email = faker.internet.email()): string => {
@@ -32,29 +33,27 @@ describe('Login Component', () => {
   }
 
   beforeAll(() => {
-    errorMessage = faker.random.words(2)
     validationSpy.validate.mockReturnValue(errorMessage)
     authenticationSpy.auth.mockResolvedValue({ accessToken: faker.datatype.uuid() })
   })
 
   beforeEach(() => {
-    sut = render(<Login validation={validationSpy} authentication={authenticationSpy}/>)
     jest.clearAllMocks()
+    sut = render(<Login validation={validationSpy} authentication={authenticationSpy}/>)
+    validationSpy.validate.mockReturnValue('')
   })
 
-  afterEach(cleanup)
-
-  it('should start with initial state', () => {
-    const statusWrap = sut.getByTestId('statusWrap')
+  it('should start with initial state', async () => {
+    const statusWrap = sut.getByRole('status-wrap')
     expect(statusWrap.childElementCount).toBe(0)
-    const submitbutton = sut.getByRole('button') as HTMLButtonElement
-    expect(submitbutton.disabled).toBe(true)
-    const emailStatus = sut.getByTestId('email-status')
+    const submitbutton = await sut.findByRole('button')
+    expect(submitbutton).toBeDisabled()
+    const emailStatus = sut.getByRole('email-status')
     expect(emailStatus.title).toBe(errorMessage)
-    expect(emailStatus.textContent).toBe('🔴')
-    const passwordStatus = sut.getByTestId('password-status')
+    expect(emailStatus).toHaveTextContent('🔴')
+    const passwordStatus = sut.getByRole('password-status')
     expect(passwordStatus.title).toBe(errorMessage)
-    expect(passwordStatus.textContent).toBe('🔴')
+    expect(passwordStatus).toHaveTextContent('🔴')
   })
 
   it('should call validation with correct email', () => {
@@ -68,59 +67,55 @@ describe('Login Component', () => {
   })
 
   it('should show email error if Validation fails', () => {
+    validationSpy.validate.mockReturnValue(errorMessage)
     arrangeEmail(sut)
-    const emailStatus = sut.getByTestId('email-status')
+    const emailStatus = sut.getByRole('email-status')
     expect(emailStatus.title).toBe(errorMessage)
     expect(emailStatus.textContent).toBe('🔴')
   })
 
   it('should show password error if Validation fails', () => {
+    validationSpy.validate.mockReturnValue(errorMessage)
     arrangePassword(sut)
-    const passwordStatus = sut.getByTestId('password-status')
+    const passwordStatus = sut.getByRole('password-status')
     expect(passwordStatus.title).toBe(errorMessage)
     expect(passwordStatus.textContent).toBe('🔴')
   })
 
   it('should show valid email state if Validation succeeds', () => {
-    validationSpy.validate.mockReturnValue('')
     arrangeEmail(sut)
-    const emailStatus = sut.getByTestId('email-status')
+    const emailStatus = sut.getByRole('email-status')
     expect(emailStatus.title).toBe('Tudo certo!')
     expect(emailStatus.textContent).toBe('🟢')
   })
 
   it('should show valid password state if Validation succeeds', () => {
-    validationSpy.validate.mockReturnValue('')
     arrangePassword(sut)
-    const passwordStatus = sut.getByTestId('password-status')
+    const passwordStatus = sut.getByRole('password-status')
     expect(passwordStatus.title).toBe('Tudo certo!')
     expect(passwordStatus.textContent).toBe('🟢')
   })
 
   it('should enable submit button if form is valid', () => {
-    validationSpy.validate.mockReturnValue('')
     arrangeInputs(sut)
-    const submitButton = sut.getByRole('button') as HTMLButtonElement
-    expect(submitButton.disabled).toBe(false)
+    const submitButton = sut.getByRole('button')
+    expect(submitButton).toBeEnabled()
   })
 
   it('should show spinner on submit', async () => {
-    validationSpy.validate.mockReturnValue('')
     arrangeInputs(sut)
     actSubmit(sut)
-    const spinner = sut.findByTestId('spinner')
+    const spinner = await sut.findByRole('progressbar')
     expect(spinner).toBeTruthy()
   })
 
   it('should call Authentication with correct values', async () => {
-    validationSpy.validate.mockReturnValue('')
     const params = arrangeInputs(sut)
     actSubmit(sut)
     expect(authenticationSpy.auth).toHaveBeenCalledWith(params)
   })
 
   it('should call Authentication only once', async () => {
-    validationSpy.validate.mockReturnValue('')
     arrangeInputs(sut)
     actSubmit(sut)
     actSubmit(sut)
@@ -132,5 +127,16 @@ describe('Login Component', () => {
     arrangeEmail(sut)
     fireEvent.submit(sut.getByRole('form'))
     expect(authenticationSpy.auth).toHaveBeenCalledTimes(0)
+  })
+
+  it('should present error if Authentication fails', async () => {
+    const error = new InvalidCredentialsError()
+    authenticationSpy.auth.mockRejectedValueOnce(error)
+    arrangeInputs(sut)
+    actSubmit(sut)
+    const statusWrap = sut.getByRole('status-wrap')
+    const mainError = await sut.findByRole('error-message')
+    expect(mainError).toHaveTextContent(error.message)
+    expect(statusWrap.childElementCount).toBe(1)
   })
 })
