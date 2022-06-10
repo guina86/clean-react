@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Styles from './styles.scss'
 import { LoginHeader as Header, Footer, Input, FormStatus } from '@presentation/components'
 import Context from '@presentation/contexts/form-context'
-import { Validation } from '@presentation/protocols/validation'
+import { Validation } from '@presentation/validation/protocols'
 import { Authentication } from '@domain/usecases'
 import { Link, useNavigate } from 'react-router-dom'
 
