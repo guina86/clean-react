@@ -24,7 +24,7 @@ const Input: React.FC<Props> = (props) => {
   return (
     <div className={Styles.inputWrap}>
       <input {...props} autoComplete='nope' onChange={handleChange}/>
-      <span data-testid={`${props.name!}-status`} title={getTitle()} className={Styles.status}>{getStatus()}</span>
+      <span role={`${props.name!}-status`} title={getTitle()} className={Styles.status}>{getStatus()}</span>
     </div>
   )
 }
