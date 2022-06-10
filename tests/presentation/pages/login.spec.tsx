@@ -12,7 +12,7 @@ import { Router } from 'react-router-dom'
 
 describe('Login Component', () => {
   let sut: RenderResult
-  const history = createMemoryHistory()
+  const history = createMemoryHistory({ initialEntries: ['/login'] })
   const errorMessage = faker.random.words(2)
   const accessToken = faker.datatype.uuid()
   const validationSpy = mock<Validation>()
@@ -155,6 +155,8 @@ describe('Login Component', () => {
     actSubmit(sut)
     await waitFor(async () => sut.getByRole('form'))
     expect(localStorage.setItem).toHaveBeenCalledWith('accessToken', accessToken)
+    expect(history.index).toBe(0)
+    expect(history.location.pathname).toBe('/')
   })
 
   it('should got to signup page', async () => {
