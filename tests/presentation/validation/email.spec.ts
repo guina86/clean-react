@@ -20,4 +20,10 @@ describe('EmailValidation', () => {
 
     expect(error).toBeFalsy()
   })
+
+  it('should return falsy if email is empty', () => {
+    const error = sut.validate('')
+
+    expect(error).toBeFalsy()
+  })
 })
