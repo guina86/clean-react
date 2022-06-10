@@ -9,9 +9,9 @@ describe('ValidationComposite', () => {
 
   beforeAll(() => {
     fieldValidationSpy.field = 'any_field'
-    fieldValidationSpy.validate.mockReturnValue(null)
+    fieldValidationSpy.validate.mockReturnValue(new Error('first_error_message'))
     fieldValidationSpy2.field = 'any_field'
-    fieldValidationSpy2.validate.mockReturnValue(new Error('error_message'))
+    fieldValidationSpy2.validate.mockReturnValue(new Error('second_error_message'))
   })
 
   beforeEach(() => {
@@ -21,6 +21,6 @@ describe('ValidationComposite', () => {
   it('should return error if any validation fails', () => {
     const error = sut.validate('any_field', 'any_value')
 
-    expect(error).toBe('error_message')
+    expect(error).toBe('first_error_message')
   })
 })
