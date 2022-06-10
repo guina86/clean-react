@@ -1,5 +1,5 @@
 import { EmailValidation } from '@presentation/validation/validators'
-import { InvalidFieldError } from '@presentation/validation/errors/invalid-field'
+import { InvalidFieldError } from '@presentation/validation/errors'
 import { faker } from '@faker-js/faker'
 
 describe('EmailValidation', () => {
