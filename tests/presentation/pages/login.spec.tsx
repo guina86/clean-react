@@ -7,9 +7,12 @@ import { faker } from '@faker-js/faker'
 import { Authentication } from '@domain/usecases'
 import { InvalidCredentialsError } from '@domain/errors'
 import 'jest-localstorage-mock'
+import { createMemoryHistory } from 'history'
+import { Router } from 'react-router-dom'
 
 describe('Login Component', () => {
   let sut: RenderResult
+  const history = createMemoryHistory()
   const errorMessage = faker.random.words(2)
   const accessToken = faker.datatype.uuid()
   const validationSpy = mock<Validation>()
@@ -42,7 +45,11 @@ describe('Login Component', () => {
   beforeEach(() => {
     localStorage.clear()
     jest.clearAllMocks()
-    sut = render(<Login validation={validationSpy} authentication={authenticationSpy}/>)
+    sut = render(
+      <Router location={history.location} navigator={history}>
+        <Login validation={validationSpy} authentication={authenticationSpy}/>
+      </Router>
+    )
     validationSpy.validate.mockReturnValue('')
   })
 
@@ -148,5 +155,12 @@ describe('Login Component', () => {
     actSubmit(sut)
     await waitFor(async () => sut.getByRole('form'))
     expect(localStorage.setItem).toHaveBeenCalledWith('accessToken', accessToken)
+  })
+
+  it('should got to signup page', async () => {
+    const register = sut.getByRole('register-link')
+    fireEvent.click(register)
+    expect(history.index).toBe(1)
+    expect(history.location.pathname).toBe('/signup')
   })
 })
