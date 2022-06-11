@@ -1,6 +1,6 @@
 import { ValidationComposite } from '@presentation/validation/validators'
 import { mock } from 'jest-mock-extended'
-import { FieldValidation } from './protocols'
+import { FieldValidation } from '@presentation/validation/protocols'
 
 describe('ValidationComposite', () => {
   let sut: ValidationComposite
@@ -22,5 +22,13 @@ describe('ValidationComposite', () => {
     const error = sut.validate('any_field', 'any_value')
 
     expect(error).toBe('first_error_message')
+  })
+
+  it('should return empty if validation succeeds', () => {
+    fieldValidationSpy.validate.mockReturnValue(null)
+    fieldValidationSpy2.validate.mockReturnValue(null)
+    const error = sut.validate('any_field', 'any_value')
+
+    expect(error).toBe('')
   })
 })
