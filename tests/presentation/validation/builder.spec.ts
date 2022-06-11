@@ -1,4 +1,4 @@
-import { EmailValidation, MinLengthValidation, RequiredFieldValidation, ValidationBuilder } from '@presentation/validation/validators'
+import { EmailValidation, MinLengthValidation, RequiredFieldValidation, ValidationBuilder, ValidationFacade } from '@presentation/validation/validators'
 
 describe('ValidationBuilder', () => {
   it('should return RequiredFieldValidation', () => {
@@ -23,5 +23,19 @@ describe('ValidationBuilder', () => {
       new EmailValidation('any_field'),
       new MinLengthValidation('any_field', 5)
     ])
+  })
+
+  it('should throw error if push is accessed without a facade', () => {
+    try {
+      ValidationBuilder.field('any_field').required().email().min(5).push()
+    } catch (error) {
+      expect(error).toEqual(new Error('This helper function can only be used through the facade'))
+    }
+  })
+
+  it('should return a ValidationFacade after a push', () => {
+    const facade = new ValidationFacade()
+    const validations = ValidationBuilder.field('any_field', facade).required().email().min(5).push()
+    expect(validations).toEqual(facade)
   })
 })
