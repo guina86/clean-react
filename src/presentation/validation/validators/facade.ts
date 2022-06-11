@@ -9,11 +9,15 @@ export class ValidationFacade {
   }
 
   push (validators: FieldValidation[]): ValidationFacade {
-    this.validators.concat(validators)
+    this.validators.push(...validators)
     return this
   }
 
   build (): ValidationComposite {
     return new ValidationComposite(this.validators)
+  }
+
+  get list (): FieldValidation[] {
+    return this.validators
   }
 }
