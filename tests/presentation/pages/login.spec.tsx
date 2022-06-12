@@ -2,12 +2,11 @@ import React from 'react'
 import { Router } from 'react-router-dom'
 import { render, fireEvent, waitFor, screen } from '@testing-library/react'
 import { createMemoryHistory } from 'history'
-import 'jest-localstorage-mock'
 import mock from 'jest-mock-extended/lib/Mock'
 import { faker } from '@faker-js/faker'
 import Login from '@presentation/pages/login'
 import { Validation } from '@presentation/validation/protocols'
-import { Authentication } from '@domain/usecases'
+import { Authentication, SaveAccessToken } from '@domain/usecases'
 import { InvalidCredentialsError } from '@domain/errors'
 import { actSubmit, arrangeEmail, arrangeInputs, arrangePassword } from '@tests/presentation/pages/helpers'
 
@@ -17,6 +16,7 @@ describe('Login Component', () => {
   const accessToken = faker.datatype.uuid()
   const validationSpy = mock<Validation>()
   const authenticationSpy = mock<Authentication>()
+  const saveAccessTokenSpy = mock<SaveAccessToken>()
 
   beforeAll(() => {
     validationSpy.validate.mockReturnValue(errorMessage)
@@ -24,11 +24,14 @@ describe('Login Component', () => {
   })
 
   beforeEach(() => {
-    localStorage.clear()
     jest.clearAllMocks()
     render(
       <Router location={history.location} navigator={history}>
-        <Login validation={validationSpy} authentication={authenticationSpy}/>
+        <Login
+          validation={validationSpy}
+          authentication={authenticationSpy}
+          saveAccessToken={saveAccessTokenSpy}
+        />
       </Router>
     )
     validationSpy.validate.mockReturnValue('')
@@ -144,14 +147,12 @@ describe('Login Component', () => {
     expect(statusWrap.childElementCount).toBe(1)
   })
 
-  it('should add accessToken to localstorage on success', async () => {
+  it('should call SaveAccessToken on success', async () => {
     arrangeInputs()
     actSubmit()
     await waitFor(async () => screen.getByRole('form'))
 
-    expect(localStorage.setItem).toHaveBeenCalledWith('accessToken', accessToken)
-    expect(history.index).toBe(0)
-    expect(history.location.pathname).toBe('/')
+    expect(saveAccessTokenSpy.save).toHaveBeenCalledWith(accessToken)
   })
 
   it('should got to signup page', async () => {
