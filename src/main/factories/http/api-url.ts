@@ -1,1 +1,1 @@
-export const makeApiUrl = (path: string): string => `https://guina-node-api.herokuapp.com/api${path}`
+export const makeApiUrl = (path: string): string => `${process.env.API_URL!}${path}`
