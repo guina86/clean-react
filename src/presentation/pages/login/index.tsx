@@ -47,7 +47,7 @@ const Login: React.FC<Props> = ({ validation, authentication }: Props) => {
       setState(old => ({
         ...old,
         isLoading: false,
-        errorMessage: error instanceof Error ? error.message : ''
+        errorMessage: (error as Error).message
       }))
     }
   }
