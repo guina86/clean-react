@@ -147,6 +147,18 @@ describe('Login Component', () => {
     expect(statusWrap.childElementCount).toBe(1)
   })
 
+  it('should present error if SaveAccessToken fails', async () => {
+    const error = new Error('save_access_token_error')
+    saveAccessTokenSpy.save.mockRejectedValueOnce(error)
+    arrangeInputs()
+    actSubmit()
+    const statusWrap = screen.getByRole('status-wrap')
+    const mainError = await screen.findByRole('error-message')
+
+    expect(mainError).toHaveTextContent(error.message)
+    expect(statusWrap.childElementCount).toBe(1)
+  })
+
   it('should call SaveAccessToken on success', async () => {
     arrangeInputs()
     actSubmit()
