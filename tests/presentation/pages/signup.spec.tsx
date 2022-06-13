@@ -7,7 +7,7 @@ import React from 'react'
 import { cleanup, render, screen } from '@testing-library/react'
 import { SignUp } from '@presentation/pages'
 import { Router } from 'react-router-dom'
-import { arrangeEmail, arrangeName, arrangePassword, arrangePasswordConfirmation } from '@tests/presentation/pages/helpers'
+import { arrangeEmail, arrangeName, arrangePassword, arrangePasswordConfirmation, arrangeSignUpInputs } from '@tests/presentation/pages/helpers'
 
 describe('Login Component', () => {
   const history = createMemoryHistory({ initialEntries: ['/signup'] })
@@ -23,6 +23,7 @@ describe('Login Component', () => {
 
   beforeEach(() => {
     jest.clearAllMocks()
+    cleanup()
     render(
       <Router location={history.location} navigator={history}>
         <SignUp
@@ -139,11 +140,18 @@ describe('Login Component', () => {
     expect(passwordStatus.textContent).toBe('🟢')
   })
 
-  it.only('should show valid passwordConfirmation state if Validation succeeds', () => {
+  it('should show valid passwordConfirmation state if Validation succeeds', () => {
     arrangePasswordConfirmation()
     const passwordConfirmation = screen.getByRole('passwordConfirmation-status')
 
     expect(passwordConfirmation.title).toBe('Tudo certo!')
     expect(passwordConfirmation.textContent).toBe('🟢')
+  })
+
+  it('should enable submit button if form is valid', () => {
+    arrangeSignUpInputs()
+    const submitButton = screen.getByRole('button')
+
+    expect(submitButton).toBeEnabled()
   })
 })
