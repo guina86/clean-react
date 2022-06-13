@@ -1,4 +1,4 @@
-import { Authentication } from '@domain/usecases'
+import { AddAccount } from '@domain/usecases'
 import { faker } from '@faker-js/faker'
 import { createMemoryHistory } from 'history'
 import { Validation } from '@presentation/validation/protocols'
@@ -14,11 +14,11 @@ describe('Login Component', () => {
   const errorMessage = faker.random.words(2)
   const accessToken = faker.datatype.uuid()
   const validationSpy = mock<Validation>()
-  const authenticationSpy = mock<Authentication>()
+  const addAccountSpy = mock<AddAccount>()
 
   beforeAll(() => {
     validationSpy.validate.mockReturnValue(errorMessage)
-    authenticationSpy.auth.mockResolvedValue({ accessToken })
+    addAccountSpy.add.mockResolvedValue({ accessToken })
   })
 
   beforeEach(() => {
@@ -28,6 +28,7 @@ describe('Login Component', () => {
       <Router location={history.location} navigator={history}>
         <SignUp
           validation={validationSpy}
+          addAccount={addAccountSpy}
         />
       </Router>
     )
@@ -161,5 +162,12 @@ describe('Login Component', () => {
     const spinner = await screen.findByRole('progressbar')
 
     expect(spinner).toBeTruthy()
+  })
+
+  it('should call AddAccount with correct values', async () => {
+    const params = arrangeSignUpInputs()
+    actSubmit()
+
+    expect(addAccountSpy.add).toHaveBeenCalledWith(params)
   })
 })
