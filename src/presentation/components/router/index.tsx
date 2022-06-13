@@ -1,6 +1,6 @@
 import React from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import { Login } from '@presentation/pages'
+import { Login, SignUp } from '@presentation/pages'
 import { makeRemoteAuthentication } from '@main/factories/usecases/remote-authentication'
 import { makeLoginValidation } from '@main/factories/validation/login-validation'
 import { makeSaveAccessToken } from '@main/factories/usecases'
@@ -15,6 +15,7 @@ const Router: React.FC = () => {
           saveAccessToken={makeSaveAccessToken()}
           />
         }/>
+        <Route path="/signup" element={<SignUp />}/>
       </Routes>
     </BrowserRouter>
   )

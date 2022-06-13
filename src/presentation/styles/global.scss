@@ -18,7 +18,8 @@ body {
 }
 
 input[type="password"],
-input[type="email"] {
+input[type="email"],
+input[type="text"] {
   font-size: 1.4rem;
   border: 0.1rem solid $primaryLight;
   line-height: 4rem;
