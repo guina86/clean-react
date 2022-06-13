@@ -67,4 +67,10 @@ describe('RemoteAddAccount', () => {
 
     await expect(promise).rejects.toThrow(new UnexpectedError())
   })
+
+  it('should return an account on success', async () => {
+    const account = await sut.add(addParams)
+
+    expect(account).toEqual({ accessToken })
+  })
 })
