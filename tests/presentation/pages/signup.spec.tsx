@@ -4,7 +4,7 @@ import { createMemoryHistory } from 'history'
 import { Validation } from '@presentation/validation/protocols'
 import { mock } from 'jest-mock-extended'
 import React from 'react'
-import { render, screen } from '@testing-library/react'
+import { cleanup, render, screen } from '@testing-library/react'
 import { SignUp } from '@presentation/pages'
 import { Router } from 'react-router-dom'
 import { arrangeEmail, arrangeName, arrangePassword, arrangePasswordConfirmation } from '@tests/presentation/pages/helpers'
@@ -32,6 +32,8 @@ describe('Login Component', () => {
     )
     validationSpy.validate.mockReturnValue('')
   })
+
+  afterEach(cleanup)
 
   it('should start with initial state', async () => {
     const statusWrap = screen.getByRole('status-wrap')
@@ -111,5 +113,37 @@ describe('Login Component', () => {
 
     expect(passwordConfirmation.title).toBe(errorMessage)
     expect(passwordConfirmation.textContent).toBe('🔴')
+  })
+
+  it('should show valid name state if Validation succeeds', () => {
+    arrangeName()
+    const nameStatus = screen.getByRole('name-status')
+
+    expect(nameStatus.title).toBe('Tudo certo!')
+    expect(nameStatus.textContent).toBe('🟢')
+  })
+
+  it('should show valid email state if Validation succeeds', () => {
+    arrangeEmail()
+    const emailStatus = screen.getByRole('email-status')
+
+    expect(emailStatus.title).toBe('Tudo certo!')
+    expect(emailStatus.textContent).toBe('🟢')
+  })
+
+  it('should show valid password state if Validation succeeds', () => {
+    arrangePassword()
+    const passwordStatus = screen.getByRole('password-status')
+
+    expect(passwordStatus.title).toBe('Tudo certo!')
+    expect(passwordStatus.textContent).toBe('🟢')
+  })
+
+  it.only('should show valid passwordConfirmation state if Validation succeeds', () => {
+    arrangePasswordConfirmation()
+    const passwordConfirmation = screen.getByRole('passwordConfirmation-status')
+
+    expect(passwordConfirmation.title).toBe('Tudo certo!')
+    expect(passwordConfirmation.textContent).toBe('🟢')
   })
 })

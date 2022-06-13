@@ -8,10 +8,10 @@ const Input: React.FC<Props> = (props) => {
   const { state, setState } = useContext(Context)
   const error = state[`${props.name!}Error`]
   const handleChange = (event: React.FocusEvent<HTMLInputElement>): void => {
-    setState({
-      ...state,
+    setState((old: any) => ({
+      ...old,
       [event.target.name]: event.target.value
-    })
+    }))
   }
 
   const getStatus = (): string => {
