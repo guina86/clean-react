@@ -7,10 +7,11 @@ import React from 'react'
 import { render, screen } from '@testing-library/react'
 import { SignUp } from '@presentation/pages'
 import { Router } from 'react-router-dom'
+import { arrangeName } from '@tests/presentation/pages/helpers'
 
 describe('Login Component', () => {
   const history = createMemoryHistory({ initialEntries: ['/signup'] })
-  const errorMessage = 'Campo obrigatório'
+  const errorMessage = faker.random.words(2)
   const accessToken = faker.datatype.uuid()
   const validationSpy = mock<Validation>()
   const authenticationSpy = mock<Authentication>()
@@ -24,7 +25,9 @@ describe('Login Component', () => {
     jest.clearAllMocks()
     render(
       <Router location={history.location} navigator={history}>
-        <SignUp />
+        <SignUp
+          validation={validationSpy}
+        />
       </Router>
     )
     validationSpy.validate.mockReturnValue('')
@@ -42,11 +45,17 @@ describe('Login Component', () => {
     expect(submitbutton).toBeDisabled()
     expect(nameStatus.title).toBe(errorMessage)
     expect(nameStatus).toHaveTextContent('🔴')
-    expect(emailStatus.title).toBe(errorMessage)
+    expect(emailStatus.title).toBe('Campo obrigatório')
     expect(emailStatus).toHaveTextContent('🔴')
-    expect(passwordStatus.title).toBe(errorMessage)
+    expect(passwordStatus.title).toBe('Campo obrigatório')
     expect(passwordStatus).toHaveTextContent('🔴')
-    expect(passwordConfirmationStatus.title).toBe(errorMessage)
+    expect(passwordConfirmationStatus.title).toBe('Campo obrigatório')
     expect(passwordConfirmationStatus).toHaveTextContent('🔴')
+  })
+
+  it('should call validation with correct name', () => {
+    const name = arrangeName()
+
+    expect(validationSpy.validate).toHaveBeenCalledWith('name', name)
   })
 })
