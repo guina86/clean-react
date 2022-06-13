@@ -4,7 +4,7 @@ import { createMemoryHistory } from 'history'
 import { Validation } from '@presentation/validation/protocols'
 import { mock } from 'jest-mock-extended'
 import React from 'react'
-import { cleanup, render, screen } from '@testing-library/react'
+import { cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { SignUp } from '@presentation/pages'
 import { Router } from 'react-router-dom'
 import { actSubmit, arrangeEmail, arrangeName, arrangePassword, arrangePasswordConfirmation, arrangeSignUpInputs } from '@tests/presentation/pages/helpers'
@@ -177,5 +177,13 @@ describe('Login Component', () => {
     actSubmit()
 
     expect(addAccountSpy.add).toHaveBeenCalledTimes(1)
+  })
+
+  it('should not call Authentication if form is not valid', async () => {
+    validationSpy.validate.mockReturnValue(errorMessage)
+    arrangeEmail()
+    fireEvent.submit(screen.getByRole('form'))
+
+    expect(addAccountSpy.add).toHaveBeenCalledTimes(0)
   })
 })
