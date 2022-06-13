@@ -29,7 +29,7 @@ export const arrangeLoginInputs = (emailInput?: string, passwordInput?: string):
 }
 type SignUpResult = {name: string, email: string, password: string, passwordConfirmation: string}
 export const arrangeSignUpInputs = (nameInput?: string, emailInput?: string, passwordInput?: string, passwordConfirmationInput?: string): SignUpResult => {
-  const name = arrangeEmail(nameInput)
+  const name = arrangeName(nameInput)
   const email = arrangeEmail(emailInput)
   const password = arrangePassword(passwordInput)
   const passwordConfirmation = arrangePasswordConfirmation(passwordConfirmationInput ?? password)

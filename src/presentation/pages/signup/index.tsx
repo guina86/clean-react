@@ -4,12 +4,14 @@ import { LoginHeader as Header, Footer, Input, FormStatus } from '@presentation/
 import Context from '@presentation/contexts/form-context'
 import { Link } from 'react-router-dom'
 import { Validation } from '@presentation/validation/protocols'
+import { AddAccount } from '@domain/usecases'
 
 type Props = {
   validation: Validation
+  addAccount: AddAccount
 }
 
-const SignUp: React.FC<Props> = ({ validation }: Props) => {
+const SignUp: React.FC<Props> = ({ validation, addAccount }: Props) => {
   const [state, setState] = useState({
     isLoading: false,
     name: '',
@@ -38,6 +40,12 @@ const SignUp: React.FC<Props> = ({ validation }: Props) => {
       ...old,
       isLoading: true
     }))
+    await addAccount.add({
+      name: state.name,
+      email: state.email,
+      password: state.password,
+      passwordConfirmation: state.passwordConfirmation
+    })
   }
   return (
     <div className={Styles.signup}>
