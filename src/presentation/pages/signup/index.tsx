@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Styles from './styles.scss'
 import { LoginHeader as Header, Footer, Input, FormStatus } from '@presentation/components'
 import Context from '@presentation/contexts/form-context'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { Validation } from '@presentation/validation/protocols'
 import { AddAccount, SaveAccessToken } from '@domain/usecases'
 
@@ -13,6 +13,7 @@ type Props = {
 }
 
 const SignUp: React.FC<Props> = ({ validation, addAccount, saveAccessToken }: Props) => {
+  const navigate = useNavigate()
   const [state, setState] = useState({
     isLoading: false,
     name: '',
@@ -50,6 +51,7 @@ const SignUp: React.FC<Props> = ({ validation, addAccount, saveAccessToken }: Pr
         passwordConfirmation: state.passwordConfirmation
       })
       await saveAccessToken.save(account.accessToken)
+      navigate('/', { replace: true })
     } catch (error) {
       setState(old => ({
         ...old,
@@ -69,7 +71,7 @@ const SignUp: React.FC<Props> = ({ validation, addAccount, saveAccessToken }: Pr
           <Input type="password" name="password" placeholder='Digite sua senha' />
           <Input type="password" name="passwordConfirmation" placeholder='Repita sua senha' />
           <button disabled={!!state.nameError || !!state.emailError || !!state.passwordError || !!state.passwordConfirmationError} className={Styles.submit} type="submit">Entrar</button>
-          <Link to="/login" role="register-link" className={Styles.link}>voltar para login</Link>
+          <Link replace to="/login" role="login-link" className={Styles.link}>voltar para login</Link>
           <FormStatus />
         </form>
       </Context.Provider>

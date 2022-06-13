@@ -220,5 +220,15 @@ describe('Login Component', () => {
     await waitFor(async () => screen.getByRole('form'))
 
     expect(saveAccessTokenSpy.save).toHaveBeenCalledWith(accessToken)
+    expect(history.index).toBe(0)
+    expect(history.location.pathname).toBe('/')
+  })
+
+  it('should go to login page', async () => {
+    const register = screen.getByRole('login-link')
+    fireEvent.click(register)
+
+    expect(history.index).toBe(0)
+    expect(history.location.pathname).toBe('/login')
   })
 })
