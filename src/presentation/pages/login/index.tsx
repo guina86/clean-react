@@ -5,6 +5,7 @@ import Context from '@presentation/contexts/form-context'
 import { Validation } from '@presentation/validation/protocols'
 import { Authentication, SaveAccessToken } from '@domain/usecases'
 import { Link, useNavigate } from 'react-router-dom'
+import SubmitButton from '@presentation/components/submit-button'
 
 type Props = {
   validation: Validation
@@ -16,6 +17,7 @@ const Login: React.FC<Props> = ({ validation, authentication, saveAccessToken }:
   const navigate = useNavigate()
   const [state, setState] = useState({
     isLoading: false,
+    isFormInvalid: true,
     email: '',
     password: '',
     emailError: '',
@@ -23,11 +25,11 @@ const Login: React.FC<Props> = ({ validation, authentication, saveAccessToken }:
     errorMessage: ''
   })
   useEffect(() => {
-    setState(old => ({
-      ...old,
-      emailError: validation.validate('email', old.email),
-      passwordError: validation.validate('password', old.password)
-    }))
+    const emailError = validation.validate('email', state.email)
+    const passwordError = validation.validate('password', state.password)
+    const isFormInvalid = !!emailError || !!passwordError
+
+    setState(old => ({ ...old, emailError, passwordError, isFormInvalid }))
   }, [state.email, state.password])
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
@@ -61,7 +63,7 @@ const Login: React.FC<Props> = ({ validation, authentication, saveAccessToken }:
           <h2>Login</h2>
           <Input type="email" name="email" placeholder='Digite seu e-mail' />
           <Input type="password" name="password" placeholder='Digite sua senha' />
-          <button disabled={!!state.emailError || !!state.passwordError} className={Styles.submit} type="submit">Entrar</button>
+          <SubmitButton>Entrar</SubmitButton>
           <Link replace to="/signup" role="register-link" className={Styles.link}>Criar conta</Link>
           <FormStatus />
         </form>

@@ -1,6 +1,5 @@
 @import '@presentation/styles/colors.scss';
 
-
 .signup {
   display: flex;
   flex-direction: column;
@@ -24,17 +23,8 @@
       text-transform: uppercase;
     }
 
-    .submit {
+    button {
       margin-top: 3rem;
-
-      &:disabled {
-        background-color: $disabledBackground;
-        color: $disabledColor;
-
-        &:hover {
-          opacity: 1;
-        }
-      }
     }
 
     .link {
