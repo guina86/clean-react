@@ -7,7 +7,7 @@ import React from 'react'
 import { cleanup, render, screen } from '@testing-library/react'
 import { SignUp } from '@presentation/pages'
 import { Router } from 'react-router-dom'
-import { arrangeEmail, arrangeName, arrangePassword, arrangePasswordConfirmation, arrangeSignUpInputs } from '@tests/presentation/pages/helpers'
+import { actSubmit, arrangeEmail, arrangeName, arrangePassword, arrangePasswordConfirmation, arrangeSignUpInputs } from '@tests/presentation/pages/helpers'
 
 describe('Login Component', () => {
   const history = createMemoryHistory({ initialEntries: ['/signup'] })
@@ -153,5 +153,13 @@ describe('Login Component', () => {
     const submitButton = screen.getByRole('button')
 
     expect(submitButton).toBeEnabled()
+  })
+
+  it('should show spinner on submit', async () => {
+    arrangeSignUpInputs()
+    actSubmit()
+    const spinner = await screen.findByRole('progressbar')
+
+    expect(spinner).toBeTruthy()
   })
 })
