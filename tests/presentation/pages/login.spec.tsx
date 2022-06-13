@@ -8,7 +8,7 @@ import Login from '@presentation/pages/login'
 import { Validation } from '@presentation/validation/protocols'
 import { Authentication, SaveAccessToken } from '@domain/usecases'
 import { InvalidCredentialsError } from '@domain/errors'
-import { actSubmit, arrangeEmail, arrangeInputs, arrangePassword } from '@tests/presentation/pages/helpers'
+import { actSubmit, arrangeEmail, arrangeLoginInputs, arrangePassword } from '@tests/presentation/pages/helpers'
 
 describe('Login Component', () => {
   const history = createMemoryHistory({ initialEntries: ['/login'] })
@@ -98,14 +98,14 @@ describe('Login Component', () => {
   })
 
   it('should enable submit button if form is valid', () => {
-    arrangeInputs()
+    arrangeLoginInputs()
     const submitButton = screen.getByRole('button')
 
     expect(submitButton).toBeEnabled()
   })
 
   it('should show spinner on submit', async () => {
-    arrangeInputs()
+    arrangeLoginInputs()
     actSubmit()
     const spinner = await screen.findByRole('progressbar')
 
@@ -113,14 +113,14 @@ describe('Login Component', () => {
   })
 
   it('should call Authentication with correct values', async () => {
-    const params = arrangeInputs()
+    const params = arrangeLoginInputs()
     actSubmit()
 
     expect(authenticationSpy.auth).toHaveBeenCalledWith(params)
   })
 
   it('should call Authentication only once', async () => {
-    arrangeInputs()
+    arrangeLoginInputs()
     actSubmit()
     actSubmit()
 
@@ -138,7 +138,7 @@ describe('Login Component', () => {
   it('should present error if Authentication fails', async () => {
     const error = new InvalidCredentialsError()
     authenticationSpy.auth.mockRejectedValueOnce(error)
-    arrangeInputs()
+    arrangeLoginInputs()
     actSubmit()
     const statusWrap = screen.getByRole('status-wrap')
     const mainError = await screen.findByRole('error-message')
@@ -150,7 +150,7 @@ describe('Login Component', () => {
   it('should present error if SaveAccessToken fails', async () => {
     const error = new Error('save_access_token_error')
     saveAccessTokenSpy.save.mockRejectedValueOnce(error)
-    arrangeInputs()
+    arrangeLoginInputs()
     actSubmit()
     const statusWrap = screen.getByRole('status-wrap')
     const mainError = await screen.findByRole('error-message')
@@ -160,7 +160,7 @@ describe('Login Component', () => {
   })
 
   it('should call SaveAccessToken on success', async () => {
-    arrangeInputs()
+    arrangeLoginInputs()
     actSubmit()
     await waitFor(async () => screen.getByRole('form'))
 
