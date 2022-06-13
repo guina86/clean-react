@@ -8,6 +8,7 @@ import { cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { SignUp } from '@presentation/pages'
 import { Router } from 'react-router-dom'
 import { actSubmit, arrangeEmail, arrangeName, arrangePassword, arrangePasswordConfirmation, arrangeSignUpInputs } from '@tests/presentation/pages/helpers'
+import { EmailInUseError } from '@domain/errors'
 
 describe('Login Component', () => {
   const history = createMemoryHistory({ initialEntries: ['/signup'] })
@@ -185,5 +186,17 @@ describe('Login Component', () => {
     fireEvent.submit(screen.getByRole('form'))
 
     expect(addAccountSpy.add).toHaveBeenCalledTimes(0)
+  })
+
+  it('should present error if Authentication fails', async () => {
+    const error = new EmailInUseError()
+    addAccountSpy.add.mockRejectedValueOnce(error)
+    arrangeSignUpInputs()
+    actSubmit()
+    const statusWrap = screen.getByRole('status-wrap')
+    const mainError = await screen.findByRole('error-message')
+
+    expect(mainError).toHaveTextContent(error.message)
+    expect(statusWrap.childElementCount).toBe(1)
   })
 })
