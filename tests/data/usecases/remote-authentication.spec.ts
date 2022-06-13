@@ -19,7 +19,7 @@ describe('RemoteAuthentication', () => {
       email: faker.internet.email(),
       password: faker.internet.password()
     }
-    accessToken = faker.random.alphaNumeric(32)
+    accessToken = faker.datatype.uuid()
     httpPostClientSpy.post.mockResolvedValue({ statusCode: HttpStatusCode.ok, body: { accessToken } })
   })
 
@@ -65,7 +65,7 @@ describe('RemoteAuthentication', () => {
     await expect(promise).rejects.toThrow(new UnexpectedError())
   })
 
-  it('should return an account on succes', async () => {
+  it('should return an account on success', async () => {
     const account = await sut.auth(authParams)
 
     expect(account).toEqual({ accessToken })
