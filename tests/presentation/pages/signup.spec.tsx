@@ -170,4 +170,12 @@ describe('Login Component', () => {
 
     expect(addAccountSpy.add).toHaveBeenCalledWith(params)
   })
+
+  it('should call Authentication only once', async () => {
+    arrangeSignUpInputs()
+    actSubmit()
+    actSubmit()
+
+    expect(addAccountSpy.add).toHaveBeenCalledTimes(1)
+  })
 })
