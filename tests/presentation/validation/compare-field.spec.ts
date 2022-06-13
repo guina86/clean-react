@@ -9,7 +9,7 @@ describe('CompareFieldsValidation', () => {
   })
 
   it('should return error if fields do not match', () => {
-    const error = sut.validate('other_field')
+    const error = sut.validate('other_value')
 
     expect(error).toEqual(new InvalidFieldError('any_field'))
   })

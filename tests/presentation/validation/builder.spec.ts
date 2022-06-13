@@ -1,4 +1,4 @@
-import { EmailValidation, MinLengthValidation, RequiredFieldValidation, ValidationBuilder, ValidationFacade } from '@presentation/validation/validators'
+import { CompareFieldsValidation, EmailValidation, MinLengthValidation, RequiredFieldValidation, ValidationBuilder, ValidationFacade } from '@presentation/validation/validators'
 
 describe('ValidationBuilder', () => {
   it('should return RequiredFieldValidation', () => {
@@ -14,6 +14,11 @@ describe('ValidationBuilder', () => {
   it('should return MinLenghtValidation', () => {
     const validations = ValidationBuilder.field('any_field').min(5).build()
     expect(validations).toEqual([new MinLengthValidation('any_field', 5)])
+  })
+
+  it('should return CompareFieldValidation', () => {
+    const validations = ValidationBuilder.field('any_field').compare('field_value').build()
+    expect(validations).toEqual([new CompareFieldsValidation('any_field', 'field_value')])
   })
 
   it('should return a list of validations', () => {
