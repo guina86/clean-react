@@ -1,4 +1,5 @@
 export * from './required-field'
+export * from './compare-fields'
 export * from './email'
 export * from './min-length'
 export * from './composite'
