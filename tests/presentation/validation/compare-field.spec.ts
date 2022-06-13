@@ -13,4 +13,10 @@ describe('CompareFieldsValidation', () => {
 
     expect(error).toEqual(new InvalidFieldError('any_field'))
   })
+
+  it('should return falsy if fields match', () => {
+    const error = sut.validate('any_value')
+
+    expect(error).toBeFalsy()
+  })
 })
