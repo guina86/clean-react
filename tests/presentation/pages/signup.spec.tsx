@@ -4,7 +4,7 @@ import { createMemoryHistory } from 'history'
 import { Validation } from '@presentation/validation/protocols'
 import { mock } from 'jest-mock-extended'
 import React from 'react'
-import { cleanup, fireEvent, render, screen } from '@testing-library/react'
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { SignUp } from '@presentation/pages'
 import { Router } from 'react-router-dom'
 import { actSubmit, arrangeEmail, arrangeName, arrangePassword, arrangePasswordConfirmation, arrangeSignUpInputs } from '@tests/presentation/pages/helpers'
@@ -212,5 +212,13 @@ describe('Login Component', () => {
 
     expect(mainError).toHaveTextContent(error.message)
     expect(statusWrap.childElementCount).toBe(1)
+  })
+
+  it('should call SaveAccessToken on success', async () => {
+    arrangeSignUpInputs()
+    actSubmit()
+    await waitFor(async () => screen.getByRole('form'))
+
+    expect(saveAccessTokenSpy.save).toHaveBeenCalledWith(accessToken)
   })
 })
