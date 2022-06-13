@@ -1,4 +1,4 @@
-import { AddAccount } from '@domain/usecases'
+import { AddAccount, SaveAccessToken } from '@domain/usecases'
 import { faker } from '@faker-js/faker'
 import { createMemoryHistory } from 'history'
 import { Validation } from '@presentation/validation/protocols'
@@ -16,6 +16,7 @@ describe('Login Component', () => {
   const accessToken = faker.datatype.uuid()
   const validationSpy = mock<Validation>()
   const addAccountSpy = mock<AddAccount>()
+  const saveAccessTokenSpy = mock<SaveAccessToken>()
 
   beforeAll(() => {
     validationSpy.validate.mockReturnValue(errorMessage)
@@ -30,6 +31,7 @@ describe('Login Component', () => {
         <SignUp
           validation={validationSpy}
           addAccount={addAccountSpy}
+          saveAccessToken={saveAccessTokenSpy}
         />
       </Router>
     )
@@ -191,6 +193,18 @@ describe('Login Component', () => {
   it('should present error if Authentication fails', async () => {
     const error = new EmailInUseError()
     addAccountSpy.add.mockRejectedValueOnce(error)
+    arrangeSignUpInputs()
+    actSubmit()
+    const statusWrap = screen.getByRole('status-wrap')
+    const mainError = await screen.findByRole('error-message')
+
+    expect(mainError).toHaveTextContent(error.message)
+    expect(statusWrap.childElementCount).toBe(1)
+  })
+
+  it('should present error if SaveAccessToken fails', async () => {
+    const error = new Error('save_access_token_error')
+    saveAccessTokenSpy.save.mockRejectedValueOnce(error)
     arrangeSignUpInputs()
     actSubmit()
     const statusWrap = screen.getByRole('status-wrap')
