@@ -1,6 +1,6 @@
 import { HttpPostClient, HttpStatusCode } from '@data/protocols'
 import { RemoteAddAccount } from '@data/usecases'
-import { EmailInUseError } from '@domain/errors'
+import { EmailInUseError, UnexpectedError } from '@domain/errors'
 import { AccountModel } from '@domain/model'
 import { AddAccountParams } from '@domain/usecases'
 import { faker } from '@faker-js/faker'
@@ -42,5 +42,29 @@ describe('RemoteAddAccount', () => {
     const promise = sut.add(addParams)
 
     await expect(promise).rejects.toThrow(new EmailInUseError())
+  })
+
+  it('should throw UnexpectedError if HttpPostClient returns 400', async () => {
+    httpPostClientSpy.post.mockResolvedValueOnce({ statusCode: HttpStatusCode.badRequest })
+
+    const promise = sut.add(addParams)
+
+    await expect(promise).rejects.toThrow(new UnexpectedError())
+  })
+
+  it('should throw UnexpectedError if HttpPostClient returns 404', async () => {
+    httpPostClientSpy.post.mockResolvedValueOnce({ statusCode: HttpStatusCode.notFound })
+
+    const promise = sut.add(addParams)
+
+    await expect(promise).rejects.toThrow(new UnexpectedError())
+  })
+
+  it('should throw UnexpectedError if HttpPostClient returns 500', async () => {
+    httpPostClientSpy.post.mockResolvedValueOnce({ statusCode: HttpStatusCode.serverError })
+
+    const promise = sut.add(addParams)
+
+    await expect(promise).rejects.toThrow(new UnexpectedError())
   })
 })
