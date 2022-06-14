@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "lib": ["esnext", "dom"],
+    "types": ["cypress", "node"],
+    "baseUrl": "src",
+    "paths": {
+      "@domain/*": ["domain/*"],
+      "@data/*": ["data/*"],
+      "@infra/*": ["infra/*"],
+      "@main/*": ["main/*"],
+      "@presentation/*": ["presentation/*"],
+      "@tests/*": ["../tests/*"]
+    },
+  },
+  "include": ["**/*.ts"]
+}
