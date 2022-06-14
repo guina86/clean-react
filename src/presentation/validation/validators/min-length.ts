@@ -4,7 +4,7 @@ import { FieldLengthError } from '@presentation/validation/errors'
 export class MinLengthValidation implements FieldValidation {
   constructor (readonly field: string, private readonly minLength: number) {}
 
-  validate (value: string): Error | null {
-    return value.length < this.minLength ? new FieldLengthError(this.field, this.minLength) : null
+  validate (input: Record<string, string>): Error | null {
+    return input[this.field]?.length < this.minLength ? new FieldLengthError(this.field, this.minLength) : null
   }
 }

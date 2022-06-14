@@ -53,14 +53,16 @@ describe('Login Component', () => {
 
   it('should call validation with correct email', () => {
     const email = arrangeEmail()
+    const input = { email: email, password: '' }
 
-    expect(validationSpy.validate).toHaveBeenCalledWith('email', email)
+    expect(validationSpy.validate).toHaveBeenCalledWith('email', input)
   })
 
-  it('should call validation with correct email', () => {
+  it('should call validation with correct password', () => {
     const password = arrangePassword()
+    const input = { email: '', password: password }
 
-    expect(validationSpy.validate).toHaveBeenCalledWith('password', password)
+    expect(validationSpy.validate).toHaveBeenCalledWith('password', input)
   })
 
   it('should show email error if Validation fails', () => {

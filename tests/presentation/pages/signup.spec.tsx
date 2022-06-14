@@ -62,26 +62,31 @@ describe('Login Component', () => {
 
   it('should call validation with correct name', () => {
     const name = arrangeName()
+    const input = { name, email: '', password: '', passwordConfirmation: '' }
 
-    expect(validationSpy.validate).toHaveBeenCalledWith('name', name)
+    expect(validationSpy.validate).toHaveBeenCalledWith('name', input)
   })
 
   it('should call validation with correct email', () => {
     const email = arrangeEmail()
+    const input = { name: '', email, password: '', passwordConfirmation: '' }
 
-    expect(validationSpy.validate).toHaveBeenCalledWith('email', email)
+    expect(validationSpy.validate).toHaveBeenCalledWith('email', input)
   })
 
   it('should call validation with correct password', () => {
     const password = arrangePassword()
+    const input = { name: '', email: '', password, passwordConfirmation: '' }
 
-    expect(validationSpy.validate).toHaveBeenCalledWith('password', password)
+    expect(validationSpy.validate).toHaveBeenCalledWith('password', input)
   })
 
   it('should call validation with correct passwordConfirmation', () => {
-    const passwordConfirmation = arrangePasswordConfirmation()
+    const password = arrangePassword()
+    arrangePasswordConfirmation(password)
+    const input = { name: '', email: '', password: password, passwordConfirmation: password }
 
-    expect(validationSpy.validate).toHaveBeenCalledWith('passwordConfirmation', passwordConfirmation)
+    expect(validationSpy.validate).toHaveBeenCalledWith('passwordConfirmation', input)
   })
 
   it('should show name error if Validation fails', () => {

@@ -27,8 +27,8 @@ export class ValidationBuilder {
     return this
   }
 
-  compare (fieldValue: string): ValidationBuilder {
-    this.validations.push(new CompareFieldsValidation(this.fieldName, fieldValue))
+  sameAs (fieldToCompare: string): ValidationBuilder {
+    this.validations.push(new CompareFieldsValidation(this.fieldName, fieldToCompare))
     return this
   }
 

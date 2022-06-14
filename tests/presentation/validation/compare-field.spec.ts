@@ -3,19 +3,24 @@ import { CompareFieldsValidation } from '@presentation/validation/validators'
 
 describe('CompareFieldsValidation', () => {
   let sut: CompareFieldsValidation
+  const input = {
+    any_field: 'any_value',
+    field_to_compare: 'other_value'
+  }
 
   beforeEach(() => {
-    sut = new CompareFieldsValidation('any_field', 'any_value')
+    sut = new CompareFieldsValidation('any_field', 'field_to_compare')
   })
 
   it('should return error if fields do not match', () => {
-    const error = sut.validate('other_value')
+    const error = sut.validate(input)
 
     expect(error).toEqual(new InvalidFieldError('any_field'))
   })
 
   it('should return falsy if fields match', () => {
-    const error = sut.validate('any_value')
+    input.field_to_compare = 'any_value'
+    const error = sut.validate(input)
 
     expect(error).toBeFalsy()
   })

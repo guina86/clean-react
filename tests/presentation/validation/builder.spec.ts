@@ -17,8 +17,8 @@ describe('ValidationBuilder', () => {
   })
 
   it('should return CompareFieldValidation', () => {
-    const validations = ValidationBuilder.field('any_field').compare('field_value').build()
-    expect(validations).toEqual([new CompareFieldsValidation('any_field', 'field_value')])
+    const validations = ValidationBuilder.field('any_field').sameAs('field_to_compare').build()
+    expect(validations).toEqual([new CompareFieldsValidation('any_field', 'field_to_compare')])
   })
 
   it('should return a list of validations', () => {
