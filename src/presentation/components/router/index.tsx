@@ -1,9 +1,11 @@
 import React from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import { Login } from '@presentation/pages'
+import { Login, SignUp } from '@presentation/pages'
 import { makeRemoteAuthentication } from '@main/factories/usecases/remote-authentication'
 import { makeLoginValidation } from '@main/factories/validation/login-validation'
-import { makeSaveAccessToken } from '@main/factories/usecases'
+import { makeLocalSaveAccessToken } from '@main/factories/usecases'
+import { makeSignUpValidation } from '@main/factories/validation'
+import { makeRemoteAddAccount } from '@main/factories/usecases/remote-add-account'
 
 const Router: React.FC = () => {
   return (
@@ -12,12 +14,14 @@ const Router: React.FC = () => {
         <Route path="/login" element={<Login
           authentication={makeRemoteAuthentication()}
           validation={makeLoginValidation()}
-          saveAccessToken={makeSaveAccessToken()}
+          saveAccessToken={makeLocalSaveAccessToken()}
           />
         }/>
-        {/* <Route path="/signup" element={<SignUp
-          saveAccessToken={makeSaveAccessToken()}
-        />}/> */}
+        <Route path="/signup" element={<SignUp
+          addAccount={makeRemoteAddAccount()}
+          validation={makeSignUpValidation()}
+          saveAccessToken={makeLocalSaveAccessToken()}
+        />}/>
       </Routes>
     </BrowserRouter>
   )
