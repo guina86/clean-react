@@ -26,4 +26,17 @@ describe('Login', () => {
     cy.get('button').should('have.attr', 'disabled')
     cy.getByRole('status-wrap').should('not.have.descendants')
   })
+
+  it('should present error state if form is invalid', () => {
+    cy.getByPlaceholder('Digite seu e-mail').type('valid@email.com')
+    cy.getByPlaceholder('Digite sua senha').type('12345')
+    cy.getByRole('email-status')
+      .should('have.attr', 'title', 'Tudo certo!')
+      .should('contain.text', '🟢')
+    cy.getByRole('password-status')
+      .should('have.attr', 'title', 'Tudo certo!')
+      .should('contain.text', '🟢')
+    cy.get('button').should('not.have.attr', 'disabled')
+    cy.getByRole('status-wrap').should('not.have.descendants')
+  })
 })
