@@ -53,4 +53,17 @@ describe('Login', () => {
       .getByRole('error-message').should('contain.text', 'Credenciais inválidas')
     cy.url().should('eq', `${baseUrl}/login`)
   })
+
+  it('should present save accessToken if valid credentials are provided', () => {
+    cy.getByPlaceholder('Digite seu e-mail').type('otto@mail.com')
+    cy.getByPlaceholder('Digite sua senha').type('12345')
+    cy.get('button').click()
+    cy.getByRole('status-wrap')
+      .getByRole('progressbar').should('exist')
+      .getByRole('error-message').should('not.exist')
+      .getByRole('progressbar').should('not.exist')
+      .getByRole('error-message').should('not.exist')
+    cy.url().should('eq', `${baseUrl}/`)
+    cy.window().then(window => assert.isOk(window.localStorage.getItem('accessToken')))
+  })
 })
