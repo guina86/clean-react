@@ -121,8 +121,7 @@ describe('Login', () => {
       delay: 250
     })
     cy.getByRole('email-input').type('otto@mail.com')
-    cy.getByRole('password-input').type('12345')
-    cy.get('button').click()
+    cy.getByRole('password-input').type('12345').type('{enter}')
     cy.getByRole('status-wrap')
       .getByRole('progressbar').should('exist')
       .getByRole('error-message').should('not.exist')
