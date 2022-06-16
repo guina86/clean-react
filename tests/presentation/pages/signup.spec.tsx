@@ -7,7 +7,7 @@ import React from 'react'
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { SignUp } from '@presentation/pages'
 import { Router } from 'react-router-dom'
-import { actSubmit, arrangeEmail, arrangeName, arrangePassword, arrangePasswordConfirmation, arrangeSignUpInputs } from '@tests/presentation/pages/helpers'
+import { actSubmit, arrangeEmail, arrangeName, arrangePassword, arrangePasswordConfirmation, arrangeSignUpInputs, testStatusForField } from '@tests/presentation/pages/helpers'
 import { EmailInUseError } from '@domain/errors'
 
 describe('Login Component', () => {
@@ -43,21 +43,25 @@ describe('Login Component', () => {
   it('should start with initial state', async () => {
     const statusWrap = screen.getByRole('status-wrap')
     const submitbutton = await screen.findByRole('button')
-    const nameStatus = screen.getByRole('name-status')
-    const emailStatus = screen.getByRole('email-status')
-    const passwordStatus = screen.getByRole('password-status')
-    const passwordConfirmationStatus = screen.getByRole('passwordConfirmation-status')
+    const nameInput = screen.getByRole('name-input')
+    const nameLabel = screen.getByRole('name-label')
+    const emailInput = screen.getByRole('email-input')
+    const emailLabel = screen.getByRole('email-label')
+    const passwordInput = screen.getByRole('password-input')
+    const passwordLabel = screen.getByRole('password-label')
+    const passwordConfirmationInput = screen.getByRole('password-input')
+    const passwordConfirmationLabel = screen.getByRole('password-label')
 
     expect(statusWrap.childElementCount).toBe(0)
     expect(submitbutton).toBeDisabled()
-    expect(nameStatus.title).toBe(errorMessage)
-    expect(nameStatus).toHaveTextContent('🔴')
-    expect(emailStatus.title).toBe(errorMessage)
-    expect(emailStatus).toHaveTextContent('🔴')
-    expect(passwordStatus.title).toBe(errorMessage)
-    expect(passwordStatus).toHaveTextContent('🔴')
-    expect(passwordConfirmationStatus.title).toBe(errorMessage)
-    expect(passwordConfirmationStatus).toHaveTextContent('🔴')
+    expect(nameInput.title).toBe(errorMessage)
+    expect(nameLabel.title).toBe(errorMessage)
+    expect(emailInput.title).toBe(errorMessage)
+    expect(emailLabel.title).toBe(errorMessage)
+    expect(passwordInput.title).toBe(errorMessage)
+    expect(passwordLabel.title).toBe(errorMessage)
+    expect(passwordConfirmationInput.title).toBe(errorMessage)
+    expect(passwordConfirmationLabel.title).toBe(errorMessage)
   })
 
   it('should call validation with correct name', () => {
@@ -92,69 +96,45 @@ describe('Login Component', () => {
   it('should show name error if Validation fails', () => {
     validationSpy.validate.mockReturnValue(errorMessage)
     arrangeName()
-    const nameStatus = screen.getByRole('name-status')
-
-    expect(nameStatus.title).toBe(errorMessage)
-    expect(nameStatus.textContent).toBe('🔴')
+    testStatusForField('name', errorMessage, 'invalid')
   })
 
   it('should show email error if Validation fails', () => {
     validationSpy.validate.mockReturnValue(errorMessage)
     arrangeEmail()
-    const emailStatus = screen.getByRole('email-status')
-
-    expect(emailStatus.title).toBe(errorMessage)
-    expect(emailStatus.textContent).toBe('🔴')
+    testStatusForField('email', errorMessage, 'invalid')
   })
 
   it('should show password error if Validation fails', () => {
     validationSpy.validate.mockReturnValue(errorMessage)
     arrangePassword()
-    const passwordStatus = screen.getByRole('password-status')
-
-    expect(passwordStatus.title).toBe(errorMessage)
-    expect(passwordStatus.textContent).toBe('🔴')
+    testStatusForField('password', errorMessage, 'invalid')
   })
 
   it('should show passwordConfirmation error if Validation fails', () => {
     validationSpy.validate.mockReturnValue(errorMessage)
     arrangePasswordConfirmation()
-    const passwordConfirmation = screen.getByRole('passwordConfirmation-status')
-
-    expect(passwordConfirmation.title).toBe(errorMessage)
-    expect(passwordConfirmation.textContent).toBe('🔴')
+    testStatusForField('passwordConfirmation', errorMessage, 'invalid')
   })
 
   it('should show valid name state if Validation succeeds', () => {
     arrangeName()
-    const nameStatus = screen.getByRole('name-status')
-
-    expect(nameStatus.title).toBe('Tudo certo!')
-    expect(nameStatus.textContent).toBe('🟢')
+    testStatusForField('name', '', 'valid')
   })
 
   it('should show valid email state if Validation succeeds', () => {
     arrangeEmail()
-    const emailStatus = screen.getByRole('email-status')
-
-    expect(emailStatus.title).toBe('Tudo certo!')
-    expect(emailStatus.textContent).toBe('🟢')
+    testStatusForField('email', '', 'valid')
   })
 
   it('should show valid password state if Validation succeeds', () => {
     arrangePassword()
-    const passwordStatus = screen.getByRole('password-status')
-
-    expect(passwordStatus.title).toBe('Tudo certo!')
-    expect(passwordStatus.textContent).toBe('🟢')
+    testStatusForField('password', '', 'valid')
   })
 
   it('should show valid passwordConfirmation state if Validation succeeds', () => {
     arrangePasswordConfirmation()
-    const passwordConfirmation = screen.getByRole('passwordConfirmation-status')
-
-    expect(passwordConfirmation.title).toBe('Tudo certo!')
-    expect(passwordConfirmation.textContent).toBe('🟢')
+    testStatusForField('passwordConfirmation', '', 'valid')
   })
 
   it('should enable submit button if form is valid', () => {

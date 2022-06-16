@@ -39,3 +39,12 @@ export const actSubmit = (): void => {
   const form = screen.getByRole('form')
   fireEvent.submit(form)
 }
+export const testStatusForField = (fieldName: string, error: string, status: string): void => {
+  const wrap = screen.getByRole(`${fieldName}-wrap`)
+  const input = screen.getByRole(`${fieldName}-input`)
+  const label = screen.getByRole(`${fieldName}-label`)
+
+  expect(wrap).toHaveAttribute('data-status', status)
+  expect(input.title).toBe(error)
+  expect(label.title).toBe(error)
+}

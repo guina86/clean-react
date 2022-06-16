@@ -15,21 +15,16 @@ const Input: React.FC<Props> = (props) => {
   }
 
   return (
-    <div className={Styles.inputWrap}>
+    <div className={Styles.inputWrap} role={`${props.name!}-wrap`} data-status={error ? 'invalid' : 'valid'}>
       <input
         {...props}
+        title={error}
         role={`${props.name!}-input`}
         placeholder=' '
         autoComplete='new-password'
         onChange={handleChange}
       />
-      <label>{props.placeholder}</label>
-      <span
-        role={`${props.name!}-status`}
-        title={error || 'Tudo certo!'}
-        className={Styles.status}>
-          {error ? '🔴' : '🟢'}
-      </span>
+      <label title={error} role={`${props.name!}-label`}>{props.placeholder}</label>
     </div>
   )
 }
