@@ -145,4 +145,19 @@ describe('Login', () => {
     cy.get('button').dblclick()
     cy.get('@request.all').should('have.length', 1)
   })
+
+  it('should not call submit if form is invalid', () => {
+    cy.intercept({
+      method: 'POST',
+      url: /login/
+    }, {
+      statusCode: 200,
+      body: {
+        accessToken: 'any_access_token'
+      },
+      delay: 250
+    }).as('request')
+    cy.getByRole('email-input').type('otto@mail.com').type('{enter}')
+    cy.get('@request.all').should('have.length', 0)
+  })
 })
