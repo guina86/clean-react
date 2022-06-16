@@ -42,7 +42,17 @@ describe('Login', () => {
     cy.getByRole('status-wrap').should('not.have.descendants')
   })
 
-  it('should present error if invalid credentials are provided', () => {
+  it('should present InvalidCrednetialsError on 401', () => {
+    cy.intercept({
+      method: 'POST',
+      url: /login/
+    }, {
+      statusCode: 401,
+      body: {
+        error: 'any_error_message'
+      },
+      delay: 250
+    })
     cy.getByRole('email-input').type('valid@email.com')
     cy.getByRole('password-input').type('12345')
     cy.get('button').click()
@@ -54,7 +64,39 @@ describe('Login', () => {
     cy.url().should('eq', `${baseUrl}/login`)
   })
 
+  it('should present UnexpectedError on 400', () => {
+    cy.intercept({
+      method: 'POST',
+      url: /login/
+    }, {
+      statusCode: 400,
+      body: {
+        error: 'any_error_message'
+      },
+      delay: 250
+    })
+    cy.getByRole('email-input').type('valid@email.com')
+    cy.getByRole('password-input').type('12345')
+    cy.get('button').click()
+    cy.getByRole('status-wrap')
+      .getByRole('progressbar').should('exist')
+      .getByRole('error-message').should('not.exist')
+      .getByRole('progressbar').should('not.exist')
+      .getByRole('error-message').should('contain.text', 'Algo de errado aconteceu. Tente novamente em breve.')
+    cy.url().should('eq', `${baseUrl}/login`)
+  })
+
   it('should present save accessToken if valid credentials are provided', () => {
+    cy.intercept({
+      method: 'POST',
+      url: /login/
+    }, {
+      statusCode: 200,
+      body: {
+        accessToken: 'any_access_token'
+      },
+      delay: 250
+    })
     cy.getByRole('email-input').type('otto@mail.com')
     cy.getByRole('password-input').type('12345')
     cy.get('button').click()
@@ -65,5 +107,26 @@ describe('Login', () => {
       .getByRole('error-message').should('not.exist')
     cy.url().should('eq', `${baseUrl}/`)
     cy.window().then(window => assert.isOk(window.localStorage.getItem('accessToken')))
+  })
+
+  it('should present UnexpectedError if accessToken is undefined', () => {
+    cy.intercept({
+      method: 'POST',
+      url: /login/
+    }, {
+      statusCode: 200,
+      body: {
+        invalidProperty: 'any_access_token'
+      },
+      delay: 250
+    })
+    cy.getByRole('email-input').type('otto@mail.com')
+    cy.getByRole('password-input').type('12345')
+    cy.get('button').click()
+    cy.getByRole('status-wrap')
+      .getByRole('progressbar').should('exist')
+      .getByRole('error-message').should('not.exist')
+      .getByRole('progressbar').should('not.exist')
+      .getByRole('error-message').should('contain.text', 'Algo de errado aconteceu. Tente novamente em breve.')
   })
 })
