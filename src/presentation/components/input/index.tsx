@@ -14,17 +14,22 @@ const Input: React.FC<Props> = (props) => {
     }))
   }
 
-  const getStatus = (): string => {
-    return error ? '🔴' : '🟢'
-  }
-  const getTitle = (): string => {
-    return error || 'Tudo certo!'
-  }
-
   return (
     <div className={Styles.inputWrap}>
-      <input {...props} autoComplete='nope' onChange={handleChange}/>
-      <span role={`${props.name!}-status`} title={getTitle()} className={Styles.status}>{getStatus()}</span>
+      <input
+        {...props}
+        role={`${props.name!}-input`}
+        placeholder=' '
+        autoComplete='new-password'
+        onChange={handleChange}
+      />
+      <label>{props.placeholder}</label>
+      <span
+        role={`${props.name!}-status`}
+        title={error || 'Tudo certo!'}
+        className={Styles.status}>
+          {error ? '🔴' : '🟢'}
+      </span>
     </div>
   )
 }

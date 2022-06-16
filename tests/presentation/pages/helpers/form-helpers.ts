@@ -2,22 +2,22 @@ import { faker } from '@faker-js/faker'
 import { fireEvent, screen } from '@testing-library/react'
 
 export const arrangeName = (name = faker.name.findName()): string => {
-  const emailInput = screen.getByPlaceholderText('Digite seu nome')
+  const emailInput = screen.getByRole('name-input')
   fireEvent.input(emailInput, { target: { value: name } })
   return name
 }
 export const arrangeEmail = (email = faker.internet.email()): string => {
-  const emailInput = screen.getByPlaceholderText('Digite seu e-mail')
+  const emailInput = screen.getByRole('email-input')
   fireEvent.input(emailInput, { target: { value: email } })
   return email
 }
 export const arrangePassword = (password = faker.internet.password()): string => {
-  const passwordInput = screen.getByPlaceholderText('Digite sua senha')
+  const passwordInput = screen.getByRole('password-input')
   fireEvent.input(passwordInput, { target: { value: password } })
   return password
 }
 export const arrangePasswordConfirmation = (password = faker.internet.password()): string => {
-  const passwordInput = screen.getByPlaceholderText('Repita sua senha')
+  const passwordInput = screen.getByRole('passwordConfirmation-input')
   fireEvent.input(passwordInput, { target: { value: password } })
   return password
 }

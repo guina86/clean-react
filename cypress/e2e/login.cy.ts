@@ -1,4 +1,4 @@
-const baseUrl: string = Cypress.config().baseUrl
+const baseUrl: string = Cypress.config().baseUrl!
 
 describe('Login', () => {
   beforeEach(() => {
@@ -17,8 +17,8 @@ describe('Login', () => {
   })
 
   it('should present error state if form is invalid', () => {
-    cy.getByPlaceholder('Digite seu e-mail').type('invalid_email')
-    cy.getByPlaceholder('Digite sua senha').type('1234')
+    cy.getByRole('email-input').type('invalid_email')
+    cy.getByRole('password-input').type('1234')
     cy.getByRole('email-status')
       .should('have.attr', 'title', 'email inválido')
       .should('contain.text', '🔴')
@@ -30,8 +30,8 @@ describe('Login', () => {
   })
 
   it('should present error state if form is invalid', () => {
-    cy.getByPlaceholder('Digite seu e-mail').type('valid@email.com')
-    cy.getByPlaceholder('Digite sua senha').type('12345')
+    cy.getByRole('email-input').type('valid@email.com')
+    cy.getByRole('password-input').type('12345')
     cy.getByRole('email-status')
       .should('have.attr', 'title', 'Tudo certo!')
       .should('contain.text', '🟢')
@@ -43,8 +43,8 @@ describe('Login', () => {
   })
 
   it('should present error if invalid credentials are provided', () => {
-    cy.getByPlaceholder('Digite seu e-mail').type('valid@email.com')
-    cy.getByPlaceholder('Digite sua senha').type('12345')
+    cy.getByRole('email-input').type('valid@email.com')
+    cy.getByRole('password-input').type('12345')
     cy.get('button').click()
     cy.getByRole('status-wrap')
       .getByRole('progressbar').should('exist')
@@ -55,8 +55,8 @@ describe('Login', () => {
   })
 
   it('should present save accessToken if valid credentials are provided', () => {
-    cy.getByPlaceholder('Digite seu e-mail').type('otto@mail.com')
-    cy.getByPlaceholder('Digite sua senha').type('12345')
+    cy.getByRole('email-input').type('otto@mail.com')
+    cy.getByRole('password-input').type('12345')
     cy.get('button').click()
     cy.getByRole('status-wrap')
       .getByRole('progressbar').should('exist')
