@@ -1,5 +1,6 @@
 import { SetStorage } from '@data/protocols'
 import { LocalSaveAccessToken } from '@data/usecases'
+import { UnexpectedError } from '@domain/errors'
 import { faker } from '@faker-js/faker'
 import { mock } from 'jest-mock-extended'
 
@@ -23,5 +24,11 @@ describe('LocalSaveAccessToken', () => {
     const promise = sut.save(accessToken)
 
     await expect(promise).rejects.toThrow(new Error('any_error'))
+  })
+
+  it('should throw if accessToken is falsy', async () => {
+    const promise = sut.save()
+
+    await expect(promise).rejects.toThrow(new UnexpectedError())
   })
 })
