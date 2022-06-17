@@ -64,4 +64,10 @@ describe('SignUp', () => {
     cy.url().should('eq', `${baseUrl}/`)
     cy.window().then(window => assert.isOk(window.localStorage.getItem('accessToken')))
   })
+
+  it('should present UnexpectedError if accessToken is undefined', () => {
+    mockApiSuccess(/signup/, 'POST')
+    simulateValidSignUpSubmit()
+    testStatusWrap('Algo de errado aconteceu. Tente novamente em breve.')
+  })
 })
