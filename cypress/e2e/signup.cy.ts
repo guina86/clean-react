@@ -1,5 +1,5 @@
 import { simulateValidSignUpSubmit, testInputStatus, testStatusWrap } from '../support/form-helper'
-import { mockApiError } from '../support/http-mock'
+import { mockApiError, mockApiSuccess } from '../support/http-mock'
 
 const baseUrl: string = Cypress.config().baseUrl!
 
@@ -55,5 +55,13 @@ describe('SignUp', () => {
     simulateValidSignUpSubmit()
     testStatusWrap('Algo de errado aconteceu. Tente novamente em breve.')
     cy.url().should('eq', `${baseUrl}/signup`)
+  })
+
+  it('should present save accessToken if valid credentials are provided', () => {
+    mockApiSuccess(/signup/, 'POST', { accessToken: 'any_access_token' })
+    simulateValidSignUpSubmit()
+    testStatusWrap()
+    cy.url().should('eq', `${baseUrl}/`)
+    cy.window().then(window => assert.isOk(window.localStorage.getItem('accessToken')))
   })
 })
