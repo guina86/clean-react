@@ -49,4 +49,11 @@ describe('SignUp', () => {
     testStatusWrap('Email já cadastrado')
     cy.url().should('eq', `${baseUrl}/signup`)
   })
+
+  it('should present UnexpectedError on 400', () => {
+    mockApiError(/signup/, 400)
+    simulateValidSignUpSubmit()
+    testStatusWrap('Algo de errado aconteceu. Tente novamente em breve.')
+    cy.url().should('eq', `${baseUrl}/signup`)
+  })
 })
