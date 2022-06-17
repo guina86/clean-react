@@ -17,3 +17,11 @@ export const simulateValidSubmit = (): void => {
   cy.getByRole('password-input').type('12345')
   cy.get('button').click()
 }
+
+export const simulateValidSignUpSubmit = (): void => {
+  cy.getByRole('name-input').type('valid_name')
+  cy.getByRole('email-input').type('valid@email.com')
+  cy.getByRole('password-input').type('12345')
+  cy.getByRole('passwordConfirmation-input').type('12345')
+  cy.get('button').click()
+}

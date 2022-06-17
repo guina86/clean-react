@@ -1,4 +1,7 @@
-import { testInputStatus } from '../support/form-helper'
+import { simulateValidSignUpSubmit, testInputStatus, testStatusWrap } from '../support/form-helper'
+import { mockApiError } from '../support/http-mock'
+
+const baseUrl: string = Cypress.config().baseUrl!
 
 describe('SignUp', () => {
   beforeEach(() => {
@@ -38,5 +41,12 @@ describe('SignUp', () => {
     testInputStatus('passwordConfirmation')
     cy.get('button').should('not.have.attr', 'disabled')
     cy.getByRole('status-wrap').should('not.have.descendants')
+  })
+
+  it('should present EmailInUseError on 403', () => {
+    mockApiError(/signup/, 403)
+    simulateValidSignUpSubmit()
+    testStatusWrap('Email já cadastrado')
+    cy.url().should('eq', `${baseUrl}/signup`)
   })
 })
