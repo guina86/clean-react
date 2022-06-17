@@ -24,7 +24,7 @@ describe('Login', () => {
     cy.getByRole('status-wrap').should('not.have.descendants')
   })
 
-  it('should present error state if form is invalid', () => {
+  it('should present valid state if form is valid', () => {
     cy.getByRole('email-input').type('valid@email.com')
     cy.getByRole('password-input').type('12345')
     testInputStatus('email')

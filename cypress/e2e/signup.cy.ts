@@ -26,4 +26,17 @@ describe('SignUp', () => {
     cy.get('button').should('have.attr', 'disabled')
     cy.getByRole('status-wrap').should('not.have.descendants')
   })
+
+  it('should present valid state if form is valid', () => {
+    cy.getByRole('name-input').type('valid_name')
+    cy.getByRole('email-input').type('valid@email.com')
+    cy.getByRole('password-input').type('12345')
+    cy.getByRole('passwordConfirmation-input').type('12345')
+    testInputStatus('name')
+    testInputStatus('email')
+    testInputStatus('password')
+    testInputStatus('passwordConfirmation')
+    cy.get('button').should('not.have.attr', 'disabled')
+    cy.getByRole('status-wrap').should('not.have.descendants')
+  })
 })
