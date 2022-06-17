@@ -80,4 +80,10 @@ describe('SignUp', () => {
     cy.get('button').dblclick()
     cy.get('@request.all').should('have.length', 1)
   })
+
+  it('should not call submit if form is invalid', () => {
+    mockApiSuccess(/signup/, 'POST', { accessToken: 'any_access_token' }).as('request')
+    cy.getByRole('email-input').type('otto@mail.com').type('{enter}')
+    cy.get('@request.all').should('have.length', 0)
+  })
 })
