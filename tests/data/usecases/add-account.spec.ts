@@ -11,7 +11,7 @@ describe('RemoteAddAccount', () => {
   let url: string
   let addParams: AddAccountParams
   let accessToken: string
-  const httpPostClientSpy = mock<HttpPostClient<AddAccountParams, AccountModel>>()
+  const httpPostClientSpy = mock<HttpPostClient<AccountModel>>()
 
   beforeAll(() => {
     url = faker.internet.url()
