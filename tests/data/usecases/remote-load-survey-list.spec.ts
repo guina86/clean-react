@@ -4,15 +4,21 @@ import { UnexpectedError } from '@domain/errors'
 import { SurveyModel } from '@domain/model'
 import { faker } from '@faker-js/faker'
 import { mock } from 'jest-mock-extended'
+import { makeSurveyList } from '../mocks/survey'
 
 describe('RemoteLoadSurveyList', () => {
   let sut: RemoteLoadSurveyList
   let url: string
+  let mockedSurveyList: SurveyModel[]
   const httpGetClientSpy = mock<HttpGetClient<SurveyModel[]>>()
 
   beforeAll(() => {
     url = faker.internet.url()
-    httpGetClientSpy.get.mockResolvedValue({ statusCode: HttpStatusCode.ok })
+    mockedSurveyList = makeSurveyList()
+    httpGetClientSpy.get.mockResolvedValue({
+      statusCode: HttpStatusCode.ok,
+      body: mockedSurveyList
+    })
   })
 
   beforeEach(() => {
@@ -44,5 +50,11 @@ describe('RemoteLoadSurveyList', () => {
     const promise = sut.loadAll()
 
     await expect(promise).rejects.toThrow(new UnexpectedError())
+  })
+
+  it('should return a list of SurveyModel if HttpGetClient returns 200', async () => {
+    const surveyList = await sut.loadAll()
+
+    expect(surveyList).toEqual(mockedSurveyList)
   })
 })
