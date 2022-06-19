@@ -11,6 +11,8 @@ describe('RemoteAuthentication', () => {
   let url: string
   let authParams: AuthenticationParams
   let accessToken: string
+  let name: string
+  let account: AccountModel
   const httpPostClientSpy = mock<HttpPostClient<AccountModel>>()
 
   beforeAll(() => {
@@ -19,8 +21,10 @@ describe('RemoteAuthentication', () => {
       email: faker.internet.email(),
       password: faker.internet.password()
     }
+    name = faker.name.findName()
     accessToken = faker.datatype.uuid()
-    httpPostClientSpy.post.mockResolvedValue({ statusCode: HttpStatusCode.ok, body: { accessToken } })
+    account = { accessToken, name }
+    httpPostClientSpy.post.mockResolvedValue({ statusCode: HttpStatusCode.ok, body: account })
   })
 
   beforeEach(() => {
@@ -66,8 +70,8 @@ describe('RemoteAuthentication', () => {
   })
 
   it('should return an account on success', async () => {
-    const account = await sut.auth(authParams)
+    const authAccount = await sut.auth(authParams)
 
-    expect(account).toEqual({ accessToken })
+    expect(authAccount).toEqual(account)
   })
 })

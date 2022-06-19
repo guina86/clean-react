@@ -1,7 +1,7 @@
 import React from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { Login, SignUp, SurveyList } from '@presentation/pages'
-import { makeRemoteAuthentication, makeLocalSaveAccessToken, makeRemoteAddAccount } from '@main/factories/usecases'
+import { makeRemoteAuthentication, makeLocalUpdateCurrentAccount, makeRemoteAddAccount } from '@main/factories/usecases'
 import { makeLoginValidation, makeSignUpValidation } from '@main/factories/validation'
 
 const Router: React.FC = () => {
@@ -11,13 +11,13 @@ const Router: React.FC = () => {
         <Route path="/login" element={<Login
           authentication={makeRemoteAuthentication()}
           validation={makeLoginValidation()}
-          saveAccessToken={makeLocalSaveAccessToken()}
+          updateCurrentAccount={makeLocalUpdateCurrentAccount()}
           />
         }/>
         <Route path="/signup" element={<SignUp
           addAccount={makeRemoteAddAccount()}
           validation={makeSignUpValidation()}
-          saveAccessToken={makeLocalSaveAccessToken()}
+          updateCurrentAccount={makeLocalUpdateCurrentAccount()}
           />
         }/>
         <Route path="/" element={<SurveyList />} />

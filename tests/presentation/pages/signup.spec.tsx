@@ -1,4 +1,4 @@
-import { AddAccount, SaveAccessToken } from '@domain/usecases'
+import { AddAccount, UpdateCurrentAccount } from '@domain/usecases'
 import { faker } from '@faker-js/faker'
 import { createMemoryHistory } from 'history'
 import { Validation } from '@presentation/validation/protocols'
@@ -14,13 +14,15 @@ describe('Login Component', () => {
   const history = createMemoryHistory({ initialEntries: ['/signup'] })
   const errorMessage = faker.random.words(2)
   const accessToken = faker.datatype.uuid()
+  const name = faker.name.findName()
+  const account = { accessToken, name }
   const validationSpy = mock<Validation>()
   const addAccountSpy = mock<AddAccount>()
-  const saveAccessTokenSpy = mock<SaveAccessToken>()
+  const updateCurrentAccountSpy = mock<UpdateCurrentAccount>()
 
   beforeAll(() => {
     validationSpy.validate.mockReturnValue(errorMessage)
-    addAccountSpy.add.mockResolvedValue({ accessToken })
+    addAccountSpy.add.mockResolvedValue(account)
   })
 
   beforeEach(() => {
@@ -31,7 +33,7 @@ describe('Login Component', () => {
         <SignUp
           validation={validationSpy}
           addAccount={addAccountSpy}
-          saveAccessToken={saveAccessTokenSpy}
+          updateCurrentAccount={updateCurrentAccountSpy}
         />
       </Router>
     )
@@ -189,7 +191,7 @@ describe('Login Component', () => {
 
   it('should present error if SaveAccessToken fails', async () => {
     const error = new Error('save_access_token_error')
-    saveAccessTokenSpy.save.mockRejectedValueOnce(error)
+    updateCurrentAccountSpy.save.mockRejectedValueOnce(error)
     arrangeSignUpInputs()
     actSubmit()
     const statusWrap = screen.getByRole('status-wrap')
@@ -204,7 +206,7 @@ describe('Login Component', () => {
     actSubmit()
     await waitFor(async () => screen.getByRole('form'))
 
-    expect(saveAccessTokenSpy.save).toHaveBeenCalledWith(accessToken)
+    expect(updateCurrentAccountSpy.save).toHaveBeenCalledWith(account)
     expect(history.index).toBe(0)
     expect(history.location.pathname).toBe('/')
   })

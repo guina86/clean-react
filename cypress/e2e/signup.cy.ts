@@ -57,12 +57,12 @@ describe('SignUp', () => {
     cy.url().should('eq', `${baseUrl}/signup`)
   })
 
-  it('should present save accessToken if valid credentials are provided', () => {
-    mockApiSuccess(/signup/, 'POST', { accessToken: 'any_access_token' })
+  it('should present update account if valid credentials are provided', () => {
+    mockApiSuccess(/signup/, 'POST', { accessToken: 'any_access_token', name: 'any_name' })
     simulateValidSignUpSubmit()
     testStatusWrap()
     cy.url().should('eq', `${baseUrl}/`)
-    cy.window().then(window => assert.isOk(window.localStorage.getItem('accessToken')))
+    cy.window().then(window => assert.isOk(window.localStorage.getItem('account')))
   })
 
   it('should present UnexpectedError if accessToken is undefined', () => {

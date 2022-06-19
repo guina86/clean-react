@@ -6,7 +6,7 @@ import mock from 'jest-mock-extended/lib/Mock'
 import { faker } from '@faker-js/faker'
 import Login from '@presentation/pages/login'
 import { Validation } from '@presentation/validation/protocols'
-import { Authentication, SaveAccessToken } from '@domain/usecases'
+import { Authentication, UpdateCurrentAccount } from '@domain/usecases'
 import { InvalidCredentialsError } from '@domain/errors'
 import { actSubmit, arrangeEmail, arrangeLoginInputs, arrangePassword, testStatusForField } from '@tests/presentation/pages/helpers'
 
@@ -14,13 +14,15 @@ describe('Login Component', () => {
   const history = createMemoryHistory({ initialEntries: ['/login'] })
   const errorMessage = faker.random.words(2)
   const accessToken = faker.datatype.uuid()
+  const name = faker.name.findName()
+  const account = { accessToken, name }
   const validationSpy = mock<Validation>()
   const authenticationSpy = mock<Authentication>()
-  const saveAccessTokenSpy = mock<SaveAccessToken>()
+  const updateCurrentAccountSpy = mock<UpdateCurrentAccount>()
 
   beforeAll(() => {
     validationSpy.validate.mockReturnValue(errorMessage)
-    authenticationSpy.auth.mockResolvedValue({ accessToken })
+    authenticationSpy.auth.mockResolvedValue(account)
   })
 
   beforeEach(() => {
@@ -30,7 +32,7 @@ describe('Login Component', () => {
         <Login
           validation={validationSpy}
           authentication={authenticationSpy}
-          saveAccessToken={saveAccessTokenSpy}
+          updateCurrentAccount={updateCurrentAccountSpy}
         />
       </Router>
     )
@@ -141,7 +143,7 @@ describe('Login Component', () => {
 
   it('should present error if SaveAccessToken fails', async () => {
     const error = new Error('save_access_token_error')
-    saveAccessTokenSpy.save.mockRejectedValueOnce(error)
+    updateCurrentAccountSpy.save.mockRejectedValueOnce(error)
     arrangeLoginInputs()
     actSubmit()
     const statusWrap = screen.getByRole('status-wrap')
@@ -156,7 +158,7 @@ describe('Login Component', () => {
     actSubmit()
     await waitFor(async () => screen.getByRole('form'))
 
-    expect(saveAccessTokenSpy.save).toHaveBeenCalledWith(accessToken)
+    expect(updateCurrentAccountSpy.save).toHaveBeenCalledWith(account)
     expect(history.index).toBe(0)
     expect(history.location.pathname).toBe('/')
   })
