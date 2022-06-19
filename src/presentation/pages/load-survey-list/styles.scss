@@ -86,7 +86,7 @@
         border-radius: 1rem;
         margin-bottom: 3rem;
         box-shadow: 0rem 0.1rem 0.3rem -0.1rem black;
-        
+
         .surveyContent {
           display: flex;
           flex-direction: row;
@@ -94,12 +94,30 @@
           flex-grow: 1;
           border-radius: 1rem 1rem 0rem 0rem;
           background-repeat: no-repeat;
-          background-image: 
-          linear-gradient(to right, rgba($primaryLight, 0.1), rgba($primaryLight, 0.1)),
-          linear-gradient(to right, $white, $white);
-          
+          background-image:
+            linear-gradient(to right, rgba($primaryLight, 0.1), rgba($primaryLight, 0.1)),
+            linear-gradient(to right, $white, $white);
           background-position: 0 0, 50 0;
           background-size: 50px 100%, 100% 100%;
+          position: relative;
+
+          .iconWrap {
+            position: absolute;
+            top: -1rem;
+            right: -1rem;
+            padding: 1rem;
+            border-radius: 50%;
+            display: flex;
+            box-shadow: 0rem 0.1rem 0.3rem -0.1rem;
+
+            &.red {
+              background-color: $invalid;
+            }
+
+            &.green {
+              background-color: $valid;
+            }
+          }
 
           time {
             display: flex;
@@ -109,6 +127,7 @@
             color: $white;
             border-radius: 1rem;
             margin-left: 2rem;
+            padding-bottom: .4rem;
             align-self: center;
             align-items: center;
             justify-content: center;
