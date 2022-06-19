@@ -10,7 +10,7 @@ describe('LocalStorageAdapter', () => {
   })
 
   it('should call localStorage with correct values', async () => {
-    await sut.set('any_key', 'any_value')
+    sut.set('any_key', 'any_value')
 
     expect(localStorage.setItem).toHaveBeenCalledWith('any_key', 'any_value')
   })

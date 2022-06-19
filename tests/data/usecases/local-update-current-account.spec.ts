@@ -22,7 +22,7 @@ describe('LocalUpdateCurrentAccountToken', () => {
   })
 
   it('should throw if SetStorage throws', async () => {
-    setStorageSpy.set.mockRejectedValueOnce(new Error('any_error'))
+    setStorageSpy.set.mockImplementation(() => { throw new Error('any_error') })
     const promise = sut.save(account)
 
     await expect(promise).rejects.toThrow(new Error('any_error'))
