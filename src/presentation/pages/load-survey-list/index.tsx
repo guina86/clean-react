@@ -9,6 +9,7 @@ const SurveyList: React.FC = () => {
       <div className={Styles.contentWrap}>
         <h2>Enquetes</h2>
         <ul>
+          <li></li>
           {[...Array(7)].map((_, i) => (
             <li key={i}>
             <div className={Styles.surveyContent}>
