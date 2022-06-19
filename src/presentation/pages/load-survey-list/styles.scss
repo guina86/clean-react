@@ -60,18 +60,6 @@
             position: absolute;
             top: -1rem;
             right: -1rem;
-            padding: 1rem;
-            border-radius: 50%;
-            display: flex;
-            box-shadow: 0rem 0.1rem 0.3rem -0.1rem;
-
-            &.red {
-              background-color: $invalid;
-            }
-
-            &.green {
-              background-color: $valid;
-            }
           }
 
           time {
