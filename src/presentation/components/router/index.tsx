@@ -1,11 +1,8 @@
 import React from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import { Login, SignUp } from '@presentation/pages'
-import { makeRemoteAuthentication } from '@main/factories/usecases/remote-authentication'
-import { makeLoginValidation } from '@main/factories/validation/login-validation'
-import { makeLocalSaveAccessToken } from '@main/factories/usecases'
-import { makeSignUpValidation } from '@main/factories/validation'
-import { makeRemoteAddAccount } from '@main/factories/usecases/remote-add-account'
+import { Login, SignUp, SurveyList } from '@presentation/pages'
+import { makeRemoteAuthentication, makeLocalSaveAccessToken, makeRemoteAddAccount } from '@main/factories/usecases'
+import { makeLoginValidation, makeSignUpValidation } from '@main/factories/validation'
 
 const Router: React.FC = () => {
   return (
@@ -21,7 +18,9 @@ const Router: React.FC = () => {
           addAccount={makeRemoteAddAccount()}
           validation={makeSignUpValidation()}
           saveAccessToken={makeLocalSaveAccessToken()}
-        />}/>
+          />
+        }/>
+        <Route path="/" element={<SurveyList />} />
       </Routes>
     </BrowserRouter>
   )
