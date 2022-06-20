@@ -55,14 +55,14 @@ describe('Login Component', () => {
 
     expect(statusWrap.childElementCount).toBe(0)
     expect(submitbutton).toBeDisabled()
-    expect(nameInput.title).toBe(errorMessage)
-    expect(nameLabel.title).toBe(errorMessage)
-    expect(emailInput.title).toBe(errorMessage)
-    expect(emailLabel.title).toBe(errorMessage)
-    expect(passwordInput.title).toBe(errorMessage)
-    expect(passwordLabel.title).toBe(errorMessage)
-    expect(passwordConfirmationInput.title).toBe(errorMessage)
-    expect(passwordConfirmationLabel.title).toBe(errorMessage)
+    expect(nameInput).toHaveAttribute('title', errorMessage)
+    expect(nameLabel).toHaveAttribute('title', errorMessage)
+    expect(emailInput).toHaveAttribute('title', errorMessage)
+    expect(emailLabel).toHaveAttribute('title', errorMessage)
+    expect(passwordInput).toHaveAttribute('title', errorMessage)
+    expect(passwordLabel).toHaveAttribute('title', errorMessage)
+    expect(passwordConfirmationInput).toHaveAttribute('title', errorMessage)
+    expect(passwordConfirmationLabel).toHaveAttribute('title', errorMessage)
   })
 
   it('should call validation with correct name', () => {
@@ -150,7 +150,7 @@ describe('Login Component', () => {
     actSubmit()
     const spinner = await screen.findByRole('progressbar')
 
-    expect(spinner).toBeTruthy()
+    expect(spinner).toBeInTheDocument()
   })
 
   it('should call AddAccount with correct values', async () => {
@@ -185,7 +185,7 @@ describe('Login Component', () => {
     const mainError = await screen.findByRole('error-message')
 
     expect(mainError).toHaveTextContent(error.message)
-    expect(statusWrap.childElementCount).toBe(1)
+    expect(statusWrap.children).toHaveLength(1)
   })
 
   it('should call SaveAccessToken on success', async () => {

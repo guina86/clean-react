@@ -45,6 +45,6 @@ export const testStatusForField = (fieldName: string, error: string, status: str
   const label = screen.getByRole(`${fieldName}-label`)
 
   expect(wrap).toHaveAttribute('data-status', status)
-  expect(input.title).toBe(error)
-  expect(label.title).toBe(error)
+  expect(input).toHaveProperty('title', error)
+  expect(label).toHaveProperty('title', error)
 }

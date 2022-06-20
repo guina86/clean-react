@@ -51,10 +51,10 @@ describe('Login Component', () => {
 
     expect(statusWrap.childElementCount).toBe(0)
     expect(submitbutton).toBeDisabled()
-    expect(emailInput.title).toBe(errorMessage)
-    expect(emailLabel.title).toBe(errorMessage)
-    expect(passwordInput.title).toBe(errorMessage)
-    expect(passwordLabel.title).toBe(errorMessage)
+    expect(emailInput).toHaveAttribute('title', errorMessage)
+    expect(emailLabel).toHaveAttribute('title', errorMessage)
+    expect(passwordInput).toHaveAttribute('title', errorMessage)
+    expect(passwordLabel).toHaveAttribute('title', errorMessage)
   })
 
   it('should call validation with correct email', () => {
@@ -140,7 +140,7 @@ describe('Login Component', () => {
     const mainError = await screen.findByRole('error-message')
 
     expect(mainError).toHaveTextContent(error.message)
-    expect(statusWrap.childElementCount).toBe(1)
+    expect(statusWrap.children).toHaveLength(1)
   })
 
   it('should call SaveAccessToken on success', async () => {
