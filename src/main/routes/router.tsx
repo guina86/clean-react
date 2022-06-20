@@ -5,6 +5,7 @@ import { makeRemoteAuthentication, makeRemoteAddAccount } from '@main/factories/
 import { makeLoginValidation, makeSignUpValidation } from '@main/factories/validation'
 import { ApiContext } from '@presentation/contexts'
 import { getCurrentAccountAdapter, setCurrentAccountAdapter } from '@main/adapters/current-account-adapter'
+import { PrivateRoute } from '@presentation/components'
 
 const Router: React.FC = () => {
   return (
@@ -24,7 +25,9 @@ const Router: React.FC = () => {
             validation={makeSignUpValidation()}
             />
           }/>
-          <Route path="/" element={<SurveyList />} />
+          <Route element={<PrivateRoute />}>
+            <Route path="/" element={<SurveyList />} />
+          </Route>
         </Routes>
       </BrowserRouter>
     </ApiContext.Provider>
