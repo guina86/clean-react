@@ -22,4 +22,11 @@ describe('LocalStorageAdapter', () => {
     expect(localStorage.getItem).toHaveBeenCalledWith('any_key')
     expect(obj).toEqual(value)
   })
+
+  it('should throw if localStorage.getItem returns null', async () => {
+    jest.spyOn(localStorage, 'getItem').mockReturnValueOnce(null)
+    expect(() => {
+      sut.get('any_key')
+    }).toThrow(new Error('item not found on localStorage'))
+  })
 })
