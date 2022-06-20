@@ -7,6 +7,7 @@ export class LocalStorageAdapter implements SetStorage, GetStorage {
 
   get (key: string): any {
     const result = localStorage.getItem(key)
-    return result ? JSON.parse(result) : {}
+    if (!result) throw new Error('item not found on localStorage')
+    return JSON.parse(result)
   }
 }
