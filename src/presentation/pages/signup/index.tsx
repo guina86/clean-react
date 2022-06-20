@@ -1,19 +1,19 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Styles from './styles.scss'
 import { LoginHeader as Header, Footer, Input, FormStatus } from '@presentation/components'
-import Context from '@presentation/contexts/form-context'
+import { ApiContext, FormContext } from '@presentation/contexts'
 import { Link, useNavigate } from 'react-router-dom'
 import { Validation } from '@presentation/validation/protocols'
-import { AddAccount, UpdateCurrentAccount } from '@domain/usecases'
+import { AddAccount } from '@domain/usecases'
 import SubmitButton from '@presentation/components/submit-button'
 
 type Props = {
   validation: Validation
   addAccount: AddAccount
-  updateCurrentAccount: UpdateCurrentAccount
 }
 
-const SignUp: React.FC<Props> = ({ validation, addAccount, updateCurrentAccount }: Props) => {
+const SignUp: React.FC<Props> = ({ validation, addAccount }: Props) => {
+  const { setCurrentAccount } = useContext(ApiContext)
   const navigate = useNavigate()
   const [state, setState] = useState({
     isLoading: false,
@@ -54,7 +54,7 @@ const SignUp: React.FC<Props> = ({ validation, addAccount, updateCurrentAccount 
         password: state.password,
         passwordConfirmation: state.passwordConfirmation
       })
-      await updateCurrentAccount.save(account)
+      setCurrentAccount!(account)
       navigate('/', { replace: true })
     } catch (error) {
       setState(old => ({
@@ -67,7 +67,7 @@ const SignUp: React.FC<Props> = ({ validation, addAccount, updateCurrentAccount 
   return (
     <div className={Styles.signupWrap}>
       <Header />
-      <Context.Provider value={{ state, setState } }>
+      <FormContext.Provider value={{ state, setState } }>
         <form className={Styles.form} onSubmit={handleSubmit} aria-label="form">
           <h2>Criar Conta</h2>
           <Input type="text" name="name" placeholder='Digite seu nome' />
@@ -78,7 +78,7 @@ const SignUp: React.FC<Props> = ({ validation, addAccount, updateCurrentAccount 
           <Link replace to="/login" role="login-link" className={Styles.link}>voltar para login</Link>
           <FormStatus />
         </form>
-      </Context.Provider>
+      </FormContext.Provider>
       <Footer />
     </div>
   )

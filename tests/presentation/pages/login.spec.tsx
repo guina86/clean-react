@@ -2,11 +2,12 @@ import React from 'react'
 import { Router } from 'react-router-dom'
 import { render, fireEvent, waitFor, screen } from '@testing-library/react'
 import { createMemoryHistory } from 'history'
+import { ApiContext } from '@presentation/contexts'
 import mock from 'jest-mock-extended/lib/Mock'
 import { faker } from '@faker-js/faker'
 import Login from '@presentation/pages/login'
 import { Validation } from '@presentation/validation/protocols'
-import { Authentication, UpdateCurrentAccount } from '@domain/usecases'
+import { Authentication } from '@domain/usecases'
 import { InvalidCredentialsError } from '@domain/errors'
 import { actSubmit, arrangeEmail, arrangeLoginInputs, arrangePassword, testStatusForField } from '@tests/presentation/pages/helpers'
 
@@ -18,7 +19,7 @@ describe('Login Component', () => {
   const account = { accessToken, name }
   const validationSpy = mock<Validation>()
   const authenticationSpy = mock<Authentication>()
-  const updateCurrentAccountSpy = mock<UpdateCurrentAccount>()
+  const setCurrentAccountMock = jest.fn()
 
   beforeAll(() => {
     validationSpy.validate.mockReturnValue(errorMessage)
@@ -28,13 +29,14 @@ describe('Login Component', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     render(
-      <Router location={history.location} navigator={history}>
-        <Login
-          validation={validationSpy}
-          authentication={authenticationSpy}
-          updateCurrentAccount={updateCurrentAccountSpy}
-        />
-      </Router>
+      <ApiContext.Provider value={{ setCurrentAccount: setCurrentAccountMock }}>
+        <Router location={history.location} navigator={history}>
+          <Login
+            validation={validationSpy}
+            authentication={authenticationSpy}
+          />
+        </Router>
+      </ApiContext.Provider>
     )
     validationSpy.validate.mockReturnValue('')
   })
@@ -141,24 +143,12 @@ describe('Login Component', () => {
     expect(statusWrap.childElementCount).toBe(1)
   })
 
-  it('should present error if SaveAccessToken fails', async () => {
-    const error = new Error('save_access_token_error')
-    updateCurrentAccountSpy.save.mockRejectedValueOnce(error)
-    arrangeLoginInputs()
-    actSubmit()
-    const statusWrap = screen.getByRole('status-wrap')
-    const mainError = await screen.findByRole('error-message')
-
-    expect(mainError).toHaveTextContent(error.message)
-    expect(statusWrap.childElementCount).toBe(1)
-  })
-
   it('should call SaveAccessToken on success', async () => {
     arrangeLoginInputs()
     actSubmit()
     await waitFor(async () => screen.getByRole('form'))
 
-    expect(updateCurrentAccountSpy.save).toHaveBeenCalledWith(account)
+    expect(setCurrentAccountMock).toHaveBeenCalledWith(account)
     expect(history.index).toBe(0)
     expect(history.location.pathname).toBe('/')
   })
