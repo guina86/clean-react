@@ -4,12 +4,13 @@ import { Login, SignUp, SurveyList } from '@presentation/pages'
 import { makeRemoteAuthentication, makeRemoteAddAccount } from '@main/factories/usecases'
 import { makeLoginValidation, makeSignUpValidation } from '@main/factories/validation'
 import { ApiContext } from '@presentation/contexts'
-import { setCurrentAccountAdapter } from '@main/adapters/current-account-adapter'
+import { getCurrentAccountAdapter, setCurrentAccountAdapter } from '@main/adapters/current-account-adapter'
 
 const Router: React.FC = () => {
   return (
     <ApiContext.Provider value={{
-      setCurrentAccount: setCurrentAccountAdapter
+      setCurrentAccount: setCurrentAccountAdapter,
+      getCurrentAccount: getCurrentAccountAdapter
     }}>
       <BrowserRouter>
         <Routes>
