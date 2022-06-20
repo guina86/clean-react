@@ -5,7 +5,7 @@ import { ApiContext } from '@presentation/contexts'
 import { Validation } from '@presentation/validation/protocols'
 import { mock } from 'jest-mock-extended'
 import React from 'react'
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { SignUp } from '@presentation/pages'
 import { Router } from 'react-router-dom'
 import { actSubmit, arrangeEmail, arrangeName, arrangePassword, arrangePasswordConfirmation, arrangeSignUpInputs, testStatusForField } from '@tests/presentation/pages/helpers'
@@ -28,7 +28,6 @@ describe('Login Component', () => {
 
   beforeEach(() => {
     jest.clearAllMocks()
-    cleanup()
     render(
       <ApiContext.Provider value={{ setCurrentAccount: setCurrentAccountMock }}>
         <Router location={history.location} navigator={history}>
@@ -41,8 +40,6 @@ describe('Login Component', () => {
     )
     validationSpy.validate.mockReturnValue('')
   })
-
-  afterEach(cleanup)
 
   it('should start with initial state', async () => {
     const statusWrap = screen.getByRole('status-wrap')
