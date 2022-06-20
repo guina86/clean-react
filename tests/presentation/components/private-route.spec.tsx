@@ -3,7 +3,6 @@ import { Route, Router, Routes } from 'react-router-dom'
 import { render } from '@testing-library/react'
 import PrivateRoute from '@presentation/components/private-route'
 import { createMemoryHistory, MemoryHistory } from 'history'
-import { SurveyList } from '@presentation/pages'
 import { ApiContext } from '@presentation/contexts'
 import { AccountModel } from '@domain/model'
 
@@ -11,11 +10,11 @@ describe('PrivateRoute', () => {
   let history: MemoryHistory
   const prepare = (account: AccountModel | null): void => {
     render(
-        <ApiContext.Provider value={{ getCurrentAccount: () => account }} >
+      <ApiContext.Provider value={{ getCurrentAccount: () => account }} >
         <Router location={history.location} navigator={history}>
           <Routes>
             <Route element={<PrivateRoute />}>
-              <Route path= "/" element={<SurveyList />} />
+              <Route path="/" element={<div />} />
             </Route>
           </Routes>
         </Router>
