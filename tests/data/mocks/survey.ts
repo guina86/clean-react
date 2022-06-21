@@ -1,7 +1,7 @@
 import { SurveyModel } from '@domain/model'
 import { faker } from '@faker-js/faker'
 
-export const makeSurvey = (): SurveyModel => {
+export const mockSurvey = (didAnswer?: boolean, date?: Date): SurveyModel => {
   return {
     id: faker.datatype.uuid(),
     question: faker.random.words(10),
@@ -22,9 +22,9 @@ export const makeSurvey = (): SurveyModel => {
         answer: faker.random.words(4)
       }
     ],
-    date: faker.date.recent(),
-    didAnswer: faker.datatype.boolean()
+    date: date !== undefined ? date : faker.date.recent(),
+    didAnswer: didAnswer !== undefined ? didAnswer : faker.datatype.boolean()
   }
 }
 
-export const makeSurveyList = (): SurveyModel[] => [...Array(4)].map(() => makeSurvey())
+export const mockSurveyList = (): SurveyModel[] => [...Array(4)].map(() => mockSurvey())

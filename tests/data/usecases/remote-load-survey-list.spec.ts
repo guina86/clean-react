@@ -4,7 +4,7 @@ import { UnexpectedError } from '@domain/errors'
 import { SurveyModel } from '@domain/model'
 import { faker } from '@faker-js/faker'
 import { mock } from 'jest-mock-extended'
-import { makeSurveyList } from '../mocks/survey'
+import { mockSurveyList } from '../mocks/survey'
 
 describe('RemoteLoadSurveyList', () => {
   let sut: RemoteLoadSurveyList
@@ -14,7 +14,7 @@ describe('RemoteLoadSurveyList', () => {
 
   beforeAll(() => {
     url = faker.internet.url()
-    mockedSurveyList = makeSurveyList()
+    mockedSurveyList = mockSurveyList()
     httpGetClientSpy.get.mockResolvedValue({
       statusCode: HttpStatusCode.ok,
       body: mockedSurveyList
