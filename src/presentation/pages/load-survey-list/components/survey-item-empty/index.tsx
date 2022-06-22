@@ -4,7 +4,7 @@ import Styles from './styles.scss'
 const SurveyItemEmpty: React.FC = () => {
   return (
     <>
-      <li className={Styles.surveyItemEmpty}></li>
+      <li role="empty-item" className={Styles.surveyItemEmpty}></li>
       <li className={Styles.surveyItemEmpty}></li>
       <li className={Styles.surveyItemEmpty}></li>
       <li className={Styles.surveyItemEmpty}></li>
