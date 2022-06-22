@@ -9,15 +9,21 @@ type Props = {
   loadSurveyList: LoadSurveyList
 }
 
+type StateProps = {
+  surveys: SurveyModel[]
+  error: string
+}
+
 const SurveyList: React.FC<Props> = ({ loadSurveyList }: Props) => {
-  const [state, setState] = useState<{ surveys: SurveyModel[] }>({
-    surveys: []
+  const [state, setState] = useState<StateProps>({
+    surveys: [],
+    error: ''
   })
 
   useEffect(() => {
     void loadSurveyList.loadAll()
-      .then(surveys => setState({ surveys }))
-      .catch()
+      .then(surveys => setState(old => ({ ...old, surveys })))
+      .catch(error => setState(old => ({ ...old, error: error.message })))
   }, [])
 
   return (
@@ -25,12 +31,18 @@ const SurveyList: React.FC<Props> = ({ loadSurveyList }: Props) => {
       <Header />
       <div className={Styles.contentWrap}>
         <h2>Enquetes</h2>
-        <ul role="survey-list">
-          {state.surveys.length
-            ? state.surveys.map(survey => (<SurveyItem survey={survey} key={survey.id} />))
-            : <SurveyItemEmpty />
-          }
-        </ul>
+        {state.error
+          ? <div>
+            <span role="error-message">{state.error}</span>
+            <button>Recarregar</button>
+          </div>
+          : <ul role="survey-list">
+            {state.surveys.length
+              ? state.surveys.map(survey => (<SurveyItem survey={survey} key={survey.id} />))
+              : <SurveyItemEmpty />
+            }
+          </ul>
+        }
       </div>
       <Footer />
     </div>
