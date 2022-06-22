@@ -1,9 +1,10 @@
 import React from 'react'
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen, waitFor, waitForElementToBeRemoved } from '@testing-library/react'
 import { SurveyList } from '@presentation/pages'
 import mock from 'jest-mock-extended/lib/Mock'
 import { LoadSurveyList } from '@domain/usecases'
 import { mockSurveyList } from '@tests/data/mocks/survey'
+import { UnexpectedError } from '@domain/errors'
 
 describe('SurveyList', () => {
   const loadSurveyListSpy = mock<LoadSurveyList>()
@@ -20,19 +21,29 @@ describe('SurveyList', () => {
     render(<SurveyList loadSurveyList={loadSurveyListSpy} />)
     const surveyList = screen.getByRole('survey-list')
     expect(surveyList.querySelectorAll('li:empty')).toHaveLength(4)
+    expect(screen.queryByRole('error-message')).not.toBeInTheDocument()
     await waitFor(() => surveyList)
   })
 
   it('should call LoadSurveyList', async () => {
     render(<SurveyList loadSurveyList={loadSurveyListSpy} />)
     expect(loadSurveyListSpy.loadAll).toHaveBeenCalledTimes(1)
-    await screen.findByRole('heading')
+    await waitForElementToBeRemoved(screen.queryByRole('empty-item'))
   })
 
-  it('should render surveyItems ons success', async () => {
+  it('should render surveyItems on success', async () => {
     render(<SurveyList loadSurveyList={loadSurveyListSpy} />)
     await screen.findAllByRole('survey-item')
     const surveyList = screen.getByRole('survey-list')
     expect(surveyList.querySelectorAll('li.surveyItemWrap')).toHaveLength(4)
+    expect(screen.queryByRole('error-message')).not.toBeInTheDocument()
+  })
+
+  it('should render error on failure', async () => {
+    const error = new UnexpectedError()
+    loadSurveyListSpy.loadAll.mockRejectedValueOnce(error)
+    render(<SurveyList loadSurveyList={loadSurveyListSpy} />)
+    await waitForElementToBeRemoved(screen.queryByRole('survey-list'))
+    expect(screen.getByRole('error-message')).toHaveTextContent(error.message)
   })
 })
