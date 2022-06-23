@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, screen, waitFor, waitForElementToBeRemoved } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor, waitForElementToBeRemoved } from '@testing-library/react'
 import { SurveyList } from '@presentation/pages'
 import mock from 'jest-mock-extended/lib/Mock'
 import { LoadSurveyList } from '@domain/usecases'
@@ -45,5 +45,14 @@ describe('SurveyList', () => {
     render(<SurveyList loadSurveyList={loadSurveyListSpy} />)
     await waitForElementToBeRemoved(screen.queryByRole('survey-list'))
     expect(screen.getByRole('error-message')).toHaveTextContent(error.message)
+  })
+
+  it('should call LoadSurveyList on reload', async () => {
+    loadSurveyListSpy.loadAll.mockRejectedValueOnce(new UnexpectedError())
+    render(<SurveyList loadSurveyList={loadSurveyListSpy} />)
+    await waitForElementToBeRemoved(screen.queryByRole('survey-list'))
+    fireEvent.click(screen.getByRole('button'))
+    await waitForElementToBeRemoved(screen.queryByRole('empty-item'))
+    expect(loadSurveyListSpy.loadAll).toHaveBeenCalledTimes(2)
   })
 })
