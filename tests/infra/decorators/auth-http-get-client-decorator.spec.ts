@@ -35,4 +35,12 @@ describe('AuthHttpGetClientDecorator', () => {
     await sut.get(request)
     expect(httpGetClientSpy.get).toHaveBeenCalledWith({ url: request.url, headers: { any: 'any', 'x-access-token': 'any_token' } })
   })
+
+  it('should return the same result as HttpGetClient', async () => {
+    const mockResult = { statusCode: 200, body: { data: 'any_data' } }
+    httpGetClientSpy.get.mockResolvedValueOnce(mockResult)
+    const request = { url: 'any_url', headers: { any: 'any' } }
+    const response = await sut.get(request)
+    expect(response).toEqual(mockResult)
+  })
 })
