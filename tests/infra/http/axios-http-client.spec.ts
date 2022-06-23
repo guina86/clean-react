@@ -8,6 +8,7 @@ describe('AxiosHttpClient', () => {
   let sut: AxiosHttpClient
   const url = faker.internet.url()
   const body = { any: 'data' }
+  const headers = { any: 'any_header' }
   const mockedAxios = axios as jest.Mocked<typeof axios>
 
   describe('post()', () => {
@@ -60,9 +61,9 @@ describe('AxiosHttpClient', () => {
     })
 
     it('should call axios.get with correct values', async () => {
-      await sut.get({ url })
+      await sut.get({ url, headers })
 
-      expect(mockedAxios.get).toHaveBeenCalledWith(url)
+      expect(mockedAxios.get).toHaveBeenCalledWith(url, { headers: headers })
     })
 
     it('should return correct response on axios.get', async () => {
