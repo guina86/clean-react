@@ -21,4 +21,11 @@ describe('AuthHttpGetClientDecorator', () => {
     await sut.get(request)
     expect(httpGetClientSpy.get).toHaveBeenCalledWith({ url: request.url, headers: { any: 'any' } })
   })
+
+  it('should add headers to HttpGetClient', async () => {
+    getStorageSpy.get.mockReturnValueOnce({ accessToken: 'any_token', name: 'any_name' })
+    const request = { url: 'any_url' }
+    await sut.get(request)
+    expect(httpGetClientSpy.get).toHaveBeenCalledWith({ url: request.url, headers: { 'x-access-token': 'any_token' } })
+  })
 })
