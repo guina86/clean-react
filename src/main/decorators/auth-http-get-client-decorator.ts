@@ -11,7 +11,7 @@ export class AuthHttpGetClientDecorator implements HttpGetClient {
     if (account?.accessToken) {
       params.headers = { ...params.headers, 'x-access-token': account.accessToken }
     }
-    await this.httpGetClient.get(params)
-    return { statusCode: 0, body: {} }
+    const result = await this.httpGetClient.get(params)
+    return result
   }
 }
