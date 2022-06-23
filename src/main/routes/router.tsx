@@ -1,7 +1,7 @@
 import React from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { Login, SignUp, SurveyList } from '@presentation/pages'
-import { makeRemoteAuthentication, makeRemoteAddAccount } from '@main/factories/usecases'
+import { makeRemoteAuthentication, makeRemoteAddAccount, makeRemoteLoadSurveyList } from '@main/factories/usecases'
 import { makeLoginValidation, makeSignUpValidation } from '@main/factories/validation'
 import { ApiContext } from '@presentation/contexts'
 import { getCurrentAccountAdapter, setCurrentAccountAdapter } from '@main/adapters/current-account-adapter'
@@ -18,15 +18,17 @@ const Router: React.FC = () => {
           <Route path="/login" element={<Login
             authentication={makeRemoteAuthentication()}
             validation={makeLoginValidation()}
-            />
-          }/>
+          />
+          } />
           <Route path="/signup" element={<SignUp
             addAccount={makeRemoteAddAccount()}
             validation={makeSignUpValidation()}
-            />
-          }/>
+          />
+          } />
           <Route element={<PrivateRoute />}>
-            <Route path="/" element={<SurveyList />} />
+            <Route path="/" element={<SurveyList
+              loadSurveyList={makeRemoteLoadSurveyList()}
+            />} />
           </Route>
         </Routes>
       </BrowserRouter>
