@@ -3,10 +3,10 @@ import React from 'react'
 import { SurveyItem } from '@presentation/pages/load-survey-list/components'
 import { mockSurvey } from '@tests/data/mocks/survey'
 import { IconName } from '@presentation/components'
-import { SurveyModel } from '@domain/model'
+import { LoadSurveyList } from '@domain/usecases'
 
 describe('SurveyItem', () => {
-  const prepare = (didAnswer: boolean, date: Date): SurveyModel => {
+  const prepare = (didAnswer: boolean, date: Date): LoadSurveyList.Model => {
     const survey = mockSurvey(didAnswer, date)
     render(<SurveyItem survey={survey} />)
     return survey

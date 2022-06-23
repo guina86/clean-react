@@ -1,19 +1,18 @@
 import { HttpPostClient, HttpStatusCode } from '@data/protocols'
 import { RemoteAddAccount } from '@data/usecases'
 import { EmailInUseError, UnexpectedError } from '@domain/errors'
-import { AccountModel } from '@domain/model'
-import { AddAccountParams } from '@domain/usecases'
+import { AddAccount } from '@domain/usecases'
 import { faker } from '@faker-js/faker'
 import { mock } from 'jest-mock-extended'
 
 describe('RemoteAddAccount', () => {
   let sut: RemoteAddAccount
   let url: string
-  let addParams: AddAccountParams
+  let addParams: AddAccount.Params
   let accessToken: string
   let name: string
-  let account: AccountModel
-  const httpPostClientSpy = mock<HttpPostClient<AccountModel>>()
+  let account: AddAccount.Result
+  const httpPostClientSpy = mock<HttpPostClient<AddAccount.Result>>()
 
   beforeAll(() => {
     url = faker.internet.url()

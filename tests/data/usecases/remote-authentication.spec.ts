@@ -1,19 +1,18 @@
 import { HttpPostClient, HttpStatusCode } from '@data/protocols'
 import { RemoteAuthentication } from '@data/usecases'
-import { AuthenticationParams } from '@domain/usecases'
 import { InvalidCredentialsError, UnexpectedError } from '@domain/errors'
+import { AddAccount, Authentication } from '@domain/usecases'
 import { mock } from 'jest-mock-extended'
 import { faker } from '@faker-js/faker'
-import { AccountModel } from '@domain/model'
 
 describe('RemoteAuthentication', () => {
   let sut: RemoteAuthentication
   let url: string
-  let authParams: AuthenticationParams
+  let authParams: Authentication.Params
   let accessToken: string
   let name: string
-  let account: AccountModel
-  const httpPostClientSpy = mock<HttpPostClient<AccountModel>>()
+  let account: AddAccount.Result
+  const httpPostClientSpy = mock<HttpPostClient<AddAccount.Result>>()
 
   beforeAll(() => {
     url = faker.internet.url()

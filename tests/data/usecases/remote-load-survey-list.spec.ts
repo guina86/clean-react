@@ -1,7 +1,7 @@
 import { HttpGetClient, HttpStatusCode } from '@data/protocols'
 import { RemoteLoadSurveyList } from '@data/usecases'
 import { UnexpectedError } from '@domain/errors'
-import { SurveyModel } from '@domain/model'
+import { LoadSurveyList } from '@domain/usecases'
 import { faker } from '@faker-js/faker'
 import { mock } from 'jest-mock-extended'
 import { mockSurveyList } from '../mocks/survey'
@@ -9,8 +9,8 @@ import { mockSurveyList } from '../mocks/survey'
 describe('RemoteLoadSurveyList', () => {
   let sut: RemoteLoadSurveyList
   let url: string
-  let mockedSurveyList: SurveyModel[]
-  const httpGetClientSpy = mock<HttpGetClient<SurveyModel[]>>()
+  let mockedSurveyList: LoadSurveyList.Model[]
+  const httpGetClientSpy = mock<HttpGetClient<LoadSurveyList.Model[]>>()
 
   beforeAll(() => {
     url = faker.internet.url()
@@ -52,7 +52,7 @@ describe('RemoteLoadSurveyList', () => {
     await expect(promise).rejects.toThrow(new UnexpectedError())
   })
 
-  it('should return a list of SurveyModel if HttpGetClient returns 200', async () => {
+  it('should return a list of surveys if HttpGetClient returns 200', async () => {
     const surveyList = await sut.loadAll()
 
     expect(surveyList).toEqual(mockedSurveyList)

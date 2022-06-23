@@ -1,4 +1,3 @@
-import { SurveyModel } from '@domain/model'
 import { LoadSurveyList } from '@domain/usecases'
 import { Footer, Header } from '@presentation/components'
 import React, { useEffect, useState } from 'react'
@@ -10,7 +9,7 @@ type Props = {
 }
 
 export type StateProps = {
-  surveys: SurveyModel[]
+  surveys: LoadSurveyList.Model[]
   error: string
   reload: boolean
 }
