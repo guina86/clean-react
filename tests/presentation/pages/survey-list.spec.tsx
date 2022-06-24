@@ -11,11 +11,10 @@ import { createMemoryHistory } from 'history'
 
 describe('SurveyList', () => {
   const loadSurveyListSpy = mock<LoadSurveyList>()
-  const setCurrentAccountMock = jest.fn()
   const history = createMemoryHistory({ initialEntries: ['/'] })
   const renderSut = (): void => {
     render(
-      <ApiContext.Provider value={{ setCurrentAccount: setCurrentAccountMock }}>
+      <ApiContext.Provider value={{ getCurrentAccount: jest.fn(), setCurrentAccount: jest.fn() }}>
         <Router location={history.location} navigator={history}>
           <SurveyList loadSurveyList={loadSurveyListSpy} />
         </Router>
