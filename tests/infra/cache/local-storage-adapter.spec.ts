@@ -16,6 +16,12 @@ describe('LocalStorageAdapter', () => {
     expect(localStorage.setItem).toHaveBeenCalledWith('any_key', JSON.stringify(value))
   })
 
+  it('should call localStorage.removeItem if value is undefined', async () => {
+    sut.set('any_key', undefined)
+
+    expect(localStorage.removeItem).toHaveBeenCalledWith('any_key')
+  })
+
   it('should call localStorage.getItem with correct value', async () => {
     jest.spyOn(localStorage, 'getItem').mockReturnValueOnce(JSON.stringify(value))
     const obj = sut.get('any_key')

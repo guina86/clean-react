@@ -1,4 +1,3 @@
-import { UnexpectedError } from '@domain/errors'
 import { LocalStorageAdapter } from '@infra/cache'
 import { getCurrentAccountAdapter, setCurrentAccountAdapter } from '@main/adapters/current-account-adapter'
 
@@ -12,12 +11,6 @@ describe('CurrentAccountAdapter', () => {
     setCurrentAccountAdapter(accountMock)
 
     expect(setSpy).toHaveBeenCalledWith('account', accountMock)
-  })
-
-  it('should throw UnexpectedError', () => {
-    expect(() => {
-      setCurrentAccountAdapter(undefined)
-    }).toThrow(new UnexpectedError())
   })
 
   it('should call LocalStorageAdapter.get with correct values', () => {
