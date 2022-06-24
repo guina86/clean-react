@@ -5,9 +5,23 @@ import mock from 'jest-mock-extended/lib/Mock'
 import { LoadSurveyList } from '@domain/usecases'
 import { mockSurveyList } from '@tests/data/mocks/survey'
 import { UnexpectedError } from '@domain/errors'
+import { ApiContext } from '@presentation/contexts'
+import { Router } from 'react-router-dom'
+import { createMemoryHistory } from 'history'
 
 describe('SurveyList', () => {
   const loadSurveyListSpy = mock<LoadSurveyList>()
+  const setCurrentAccountMock = jest.fn()
+  const history = createMemoryHistory({ initialEntries: ['/'] })
+  const renderSut = (): void => {
+    render(
+      <ApiContext.Provider value={{ setCurrentAccount: setCurrentAccountMock }}>
+        <Router location={history.location} navigator={history}>
+          <SurveyList loadSurveyList={loadSurveyListSpy} />
+        </Router>
+      </ApiContext.Provider>
+    )
+  }
 
   beforeAll(() => {
     loadSurveyListSpy.loadAll.mockResolvedValue(mockSurveyList())
@@ -18,7 +32,7 @@ describe('SurveyList', () => {
   })
 
   it('should present 4 empty items on start', async () => {
-    render(<SurveyList loadSurveyList={loadSurveyListSpy} />)
+    renderSut()
     const surveyList = screen.getByRole('survey-list')
     expect(surveyList.querySelectorAll('li:empty')).toHaveLength(4)
     expect(screen.queryByRole('error-message')).not.toBeInTheDocument()
@@ -26,13 +40,13 @@ describe('SurveyList', () => {
   })
 
   it('should call LoadSurveyList', async () => {
-    render(<SurveyList loadSurveyList={loadSurveyListSpy} />)
+    renderSut()
     expect(loadSurveyListSpy.loadAll).toHaveBeenCalledTimes(1)
     await waitForElementToBeRemoved(screen.queryByRole('empty-item'))
   })
 
   it('should render surveyItems on success', async () => {
-    render(<SurveyList loadSurveyList={loadSurveyListSpy} />)
+    renderSut()
     await screen.findAllByRole('survey-item')
     const surveyList = screen.getByRole('survey-list')
     expect(surveyList.querySelectorAll('li.surveyItemWrap')).toHaveLength(4)
@@ -42,14 +56,14 @@ describe('SurveyList', () => {
   it('should render error on failure', async () => {
     const error = new UnexpectedError()
     loadSurveyListSpy.loadAll.mockRejectedValueOnce(error)
-    render(<SurveyList loadSurveyList={loadSurveyListSpy} />)
+    renderSut()
     await waitForElementToBeRemoved(screen.queryByRole('survey-list'))
     expect(screen.getByRole('error-message')).toHaveTextContent(error.message)
   })
 
   it('should call LoadSurveyList on reload', async () => {
     loadSurveyListSpy.loadAll.mockRejectedValueOnce(new UnexpectedError())
-    render(<SurveyList loadSurveyList={loadSurveyListSpy} />)
+    renderSut()
     await waitForElementToBeRemoved(screen.queryByRole('survey-list'))
     fireEvent.click(screen.getByRole('button'))
     await waitForElementToBeRemoved(screen.queryByRole('empty-item'))
