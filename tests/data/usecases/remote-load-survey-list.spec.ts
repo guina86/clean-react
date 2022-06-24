@@ -1,20 +1,19 @@
 import { HttpGetClient, HttpStatusCode } from '@data/protocols'
 import { RemoteLoadSurveyList } from '@data/usecases'
 import { UnexpectedError } from '@domain/errors'
-import { LoadSurveyList } from '@domain/usecases'
 import { faker } from '@faker-js/faker'
 import { mock } from 'jest-mock-extended'
-import { mockSurveyList } from '../mocks/survey'
+import { mockRemoteSurveyList } from '@tests/data/mocks/survey'
 
 describe('RemoteLoadSurveyList', () => {
   let sut: RemoteLoadSurveyList
   let url: string
-  let mockedSurveyList: LoadSurveyList.Model[]
-  const httpGetClientSpy = mock<HttpGetClient<LoadSurveyList.Model[]>>()
+  let mockedSurveyList: RemoteLoadSurveyList.Model[]
+  const httpGetClientSpy = mock<HttpGetClient<RemoteLoadSurveyList.Model[]>>()
 
   beforeAll(() => {
     url = faker.internet.url()
-    mockedSurveyList = mockSurveyList()
+    mockedSurveyList = mockRemoteSurveyList()
     httpGetClientSpy.get.mockResolvedValue({
       statusCode: HttpStatusCode.ok,
       body: mockedSurveyList
@@ -53,9 +52,10 @@ describe('RemoteLoadSurveyList', () => {
   })
 
   it('should return a list of surveys if HttpGetClient returns 200', async () => {
+    const expectedList = mockedSurveyList.map(survey => ({ ...survey, date: new Date(survey.date) }))
     const surveyList = await sut.loadAll()
 
-    expect(surveyList).toEqual(mockedSurveyList)
+    expect(surveyList).toEqual(expectedList)
   })
 
   it('should return a empty list if HttpGetClient returns 204', async () => {
