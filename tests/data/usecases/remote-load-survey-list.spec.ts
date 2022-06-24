@@ -1,6 +1,6 @@
 import { HttpGetClient, HttpStatusCode } from '@data/protocols'
 import { RemoteLoadSurveyList } from '@data/usecases'
-import { UnexpectedError } from '@domain/errors'
+import { AccessDeniedError, UnexpectedError } from '@domain/errors'
 import { faker } from '@faker-js/faker'
 import { mock } from 'jest-mock-extended'
 import { mockRemoteSurveyList } from '@tests/data/mocks/survey'
@@ -30,11 +30,11 @@ describe('RemoteLoadSurveyList', () => {
     expect(httpGetClientSpy.get).toHaveBeenCalledWith({ url })
   })
 
-  it('should throw UnexpectedError if HttpGetClient returns 403', async () => {
+  it('should throw AccessDeniedError if HttpGetClient returns 403', async () => {
     httpGetClientSpy.get.mockResolvedValueOnce({ statusCode: HttpStatusCode.forbidden })
     const promise = sut.loadAll()
 
-    await expect(promise).rejects.toThrow(new UnexpectedError())
+    await expect(promise).rejects.toThrow(new AccessDeniedError())
   })
 
   it('should throw UnexpectedError if HttpGetClient returns 404', async () => {
