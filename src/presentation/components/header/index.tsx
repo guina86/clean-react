@@ -1,18 +1,28 @@
-import React, { memo } from 'react'
+import React, { memo, MouseEvent, useContext } from 'react'
 import { Logo } from '@presentation/components'
 import Styles from './styles.scss'
+import { ApiContext } from '@presentation/contexts'
+import { useNavigate } from 'react-router-dom'
 
 const Header: React.FC = () => {
+  const navigate = useNavigate()
+  const { setCurrentAccount } = useContext(ApiContext)
+  const logout = (event: MouseEvent): void => {
+    event.preventDefault()
+    setCurrentAccount!(undefined)
+    navigate('/login', { replace: true })
+  }
+
   return (
     <header className={Styles.headerWrap}>
-    <div className={Styles.headerContent}>
-      <Logo />
-      <div className={Styles.logoutWrap}>
-        <span>Leandro</span>
-        <a href="#">sair</a>
+      <div className={Styles.headerContent}>
+        <Logo />
+        <div className={Styles.logoutWrap}>
+          <span>Leandro</span>
+          <a role="logout" href="#" onClick={logout}>sair</a>
+        </div>
       </div>
-    </div>
-  </header>
+    </header>
   )
 }
 
