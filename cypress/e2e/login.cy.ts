@@ -55,13 +55,6 @@ describe('Login', () => {
     cy.window().then(window => assert.isOk(window.localStorage.getItem('account')))
   })
 
-  it('should present UnexpectedError if accessToken is undefined', () => {
-    mockApiSuccess(/login/, 'POST')
-    cy.getByRole('email-input').type('otto@mail.com')
-    cy.getByRole('password-input').type('12345').type('{enter}')
-    testStatusWrap('Algo de errado aconteceu. Tente novamente em breve.')
-  })
-
   it('should prevent multiple submits', () => {
     mockApiSuccess(/login/, 'POST', { accessToken: 'any_access_token' }).as('request')
     cy.getByRole('email-input').type('otto@mail.com')

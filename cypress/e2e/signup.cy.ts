@@ -65,12 +65,6 @@ describe('SignUp', () => {
     cy.window().then(window => assert.isOk(window.localStorage.getItem('account')))
   })
 
-  it('should present UnexpectedError if accessToken is undefined', () => {
-    mockApiSuccess(/signup/, 'POST')
-    simulateValidSignUpSubmit()
-    testStatusWrap('Algo de errado aconteceu. Tente novamente em breve.')
-  })
-
   it('should prevent multiple submits', () => {
     mockApiSuccess(/signup/, 'POST', { accessToken: 'any_access_token' }).as('request')
     cy.getByRole('name-input').type('any_name')
