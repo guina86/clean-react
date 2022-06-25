@@ -1,7 +1,6 @@
 import { simulateValidSignUpSubmit, testInputStatus, testStatusWrap } from '../support/form-helper'
+import { testUrl } from '../support/helpers'
 import { mockApiError, mockApiSuccess } from '../support/http-mock'
-
-const baseUrl: string = Cypress.config().baseUrl!
 
 describe('SignUp', () => {
   beforeEach(() => {
@@ -44,24 +43,24 @@ describe('SignUp', () => {
   })
 
   it('should present EmailInUseError on 403', () => {
-    mockApiError(/signup/, 403)
+    mockApiError(/signup/, 'POST', 403)
     simulateValidSignUpSubmit()
     testStatusWrap('Email já cadastrado')
-    cy.url().should('eq', `${baseUrl}/signup`)
+    testUrl('/signup')
   })
 
   it('should present UnexpectedError on 400', () => {
-    mockApiError(/signup/, 400)
+    mockApiError(/signup/, 'POST', 400)
     simulateValidSignUpSubmit()
     testStatusWrap('Algo de errado aconteceu. Tente novamente em breve.')
-    cy.url().should('eq', `${baseUrl}/signup`)
+    testUrl('/signup')
   })
 
   it('should present update account if valid credentials are provided', () => {
     mockApiSuccess(/signup/, 'POST', { accessToken: 'any_access_token', name: 'any_name' })
     simulateValidSignUpSubmit()
     testStatusWrap()
-    cy.url().should('eq', `${baseUrl}/`)
+    testUrl('/')
     cy.window().then(window => assert.isOk(window.localStorage.getItem('account')))
   })
 

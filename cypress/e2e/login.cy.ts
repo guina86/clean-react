@@ -1,7 +1,6 @@
 import { simulateValidSubmit, testInputStatus, testStatusWrap } from '../support/form-helper'
+import { testUrl } from '../support/helpers'
 import { mockApiError, mockApiSuccess } from '../support/http-mock'
-
-const baseUrl: string = Cypress.config().baseUrl!
 
 describe('Login', () => {
   beforeEach(() => {
@@ -34,24 +33,24 @@ describe('Login', () => {
   })
 
   it('should present InvalidCrednetialsError on 401', () => {
-    mockApiError(/login/, 401)
+    mockApiError(/login/, 'POST', 401)
     simulateValidSubmit()
     testStatusWrap('Credenciais inválidas')
-    cy.url().should('eq', `${baseUrl}/login`)
+    testUrl('/login')
   })
 
   it('should present UnexpectedError on 400', () => {
-    mockApiError(/login/, 400)
+    mockApiError(/login/, 'POST', 400)
     simulateValidSubmit()
     testStatusWrap('Algo de errado aconteceu. Tente novamente em breve.')
-    cy.url().should('eq', `${baseUrl}/login`)
+    testUrl('/login')
   })
 
   it('should present update account if valid credentials are provided', () => {
     mockApiSuccess(/login/, 'POST', { accessToken: 'any_access_token', name: 'any_name' })
     simulateValidSubmit()
     testStatusWrap()
-    cy.url().should('eq', `${baseUrl}/`)
+    testUrl('/')
     cy.window().then(window => assert.isOk(window.localStorage.getItem('account')))
   })
 

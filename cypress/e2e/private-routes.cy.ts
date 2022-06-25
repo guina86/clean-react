@@ -1,9 +1,8 @@
-
-const baseUrl: string = Cypress.config().baseUrl!
+import { testUrl } from '../support/helpers'
 
 describe('Private Routes', () => {
   it('should not logout if survey-list has not token', () => {
     cy.visit('')
-    cy.url().should('eq', `${baseUrl}/login`)
+    testUrl('/login')
   })
 })

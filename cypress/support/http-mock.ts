@@ -1,6 +1,6 @@
-export const mockApiError = (url: RegExp, statusCode: number): void => {
+export const mockApiError = (url: RegExp, method: string, statusCode: number): void => {
   cy.intercept({
-    method: 'POST',
+    method,
     url: url
   }, {
     statusCode: statusCode,
@@ -13,7 +13,7 @@ export const mockApiError = (url: RegExp, statusCode: number): void => {
 
 export const mockApiSuccess = (url: RegExp, method: string, body?: any): Cypress.Chainable<null> => {
   return cy.intercept({
-    method: method,
+    method,
     url: url
   }, {
     statusCode: 200,
