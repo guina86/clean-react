@@ -1,4 +1,4 @@
-import { setLocalStorageItem } from '../support/helpers'
+import { setLocalStorageItem, testUrl } from '../support/helpers'
 import { mockApiError } from '../support/http-mock'
 
 describe('SurveyList', () => {
@@ -10,5 +10,11 @@ describe('SurveyList', () => {
     mockApiError(/surveys/, 'GET', 400)
     cy.visit('')
     cy.getByRole('error-message').should('contain.text', 'Algo de errado aconteceu. Tente novamente em breve.')
+  })
+
+  it('should logout on AccessDeniedError', () => {
+    mockApiError(/surveys/, 'GET', 403)
+    cy.visit('')
+    testUrl('/login')
   })
 })
