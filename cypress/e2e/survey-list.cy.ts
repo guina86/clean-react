@@ -1,4 +1,4 @@
-import { setLocalStorageItem, testUrl } from '../support/helpers'
+import { getLocalStorageItem, setLocalStorageItem, testUrl } from '../support/helpers'
 import { mockApiError } from '../support/http-mock'
 
 describe('SurveyList', () => {
@@ -16,5 +16,12 @@ describe('SurveyList', () => {
     mockApiError(/surveys/, 'GET', 403)
     cy.visit('')
     testUrl('/login')
+  })
+
+  it('should show correct username', () => {
+    mockApiError(/surveys/, 'GET', 400)
+    cy.visit('')
+    const { name } = getLocalStorageItem('account')
+    cy.getByRole('username').should('contain.text', name)
   })
 })
