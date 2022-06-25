@@ -24,4 +24,11 @@ describe('SurveyList', () => {
     const { name } = getLocalStorageItem('account')
     cy.getByRole('username').should('contain.text', name)
   })
+
+  it('should logou when sair is clicked', () => {
+    mockApiError(/surveys/, 'GET', 400)
+    cy.visit('')
+    cy.getByRole('logout').click()
+    testUrl('/login')
+  })
 })
