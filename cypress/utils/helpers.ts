@@ -9,5 +9,5 @@ export const setLocalStorageItem = (key: string, value: object): void => {
 }
 
 export const getLocalStorageItem = (key: string): any => {
-  return JSON.parse(localStorage.getItem(key))
+  return JSON.parse(localStorage.getItem(key)!)
 }

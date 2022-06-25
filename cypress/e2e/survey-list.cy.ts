@@ -1,5 +1,5 @@
-import { getLocalStorageItem, setLocalStorageItem, testUrl } from '../support/helpers'
-import { mockApiError } from '../support/http-mock'
+import { getLocalStorageItem, setLocalStorageItem, testUrl } from '../utils/helpers'
+import { mockApiError } from '../utils/http-mock'
 
 describe('SurveyList', () => {
   beforeEach(() => {

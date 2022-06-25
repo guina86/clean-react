@@ -1,6 +1,6 @@
-import { simulateValidSubmit, testInputStatus, testStatusWrap } from '../support/form-helper'
-import { testUrl } from '../support/helpers'
-import { mockApiError, mockApiSuccess } from '../support/http-mock'
+import { simulateValidSubmit, testInputStatus, testStatusWrap } from '../utils/form-helper'
+import { testUrl } from '../utils/helpers'
+import { mockApiError, mockApiSuccess } from '../utils/http-mock'
 
 describe('Login', () => {
   beforeEach(() => {

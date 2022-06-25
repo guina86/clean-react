@@ -12,6 +12,7 @@ export const mockApiError = (url: RegExp, method: string, statusCode: number): v
 }
 
 export const mockApiSuccess = (url: RegExp, method: string, body?: any): Cypress.Chainable<null> => {
+  console.log(body)
   return cy.intercept({
     method,
     url: url
