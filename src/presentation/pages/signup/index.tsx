@@ -12,33 +12,36 @@ type Props = {
   addAccount: AddAccount
 }
 
+const initialState = {
+  isLoading: false,
+  isFormInvalid: true,
+  name: '',
+  email: '',
+  password: '',
+  passwordConfirmation: '',
+  nameError: '',
+  emailError: '',
+  passwordError: '',
+  passwordConfirmationError: '',
+  errorMessage: ''
+}
+
 const SignUp: React.FC<Props> = ({ validation, addAccount }: Props) => {
   const { setCurrentAccount } = useContext(ApiContext)
   const navigate = useNavigate()
-  const [state, setState] = useState({
-    isLoading: false,
-    isFormInvalid: true,
-    name: '',
-    email: '',
-    password: '',
-    passwordConfirmation: '',
-    nameError: 'Campo obrigatório',
-    emailError: 'Campo obrigatório',
-    passwordError: 'Campo obrigatório',
-    passwordConfirmationError: 'Campo obrigatório',
-    errorMessage: ''
-  })
-  useEffect(() => {
-    const formData = { name: state.name, email: state.email, password: state.password, passwordConfirmation: state.passwordConfirmation }
+  const [state, setState] = useState(initialState)
 
-    const nameError = validation.validate('name', formData)
-    const emailError = validation.validate('email', formData)
-    const passwordError = validation.validate('password', formData)
-    const passwordConfirmationError = validation.validate('passwordConfirmation', formData)
-    const isFormInvalid = !!nameError || !!emailError || !!passwordError || !!passwordConfirmationError
+  useEffect(() => validate('name'), [state.name])
+  useEffect(() => validate('email'), [state.email])
+  useEffect(() => validate('password'), [state.password])
+  useEffect(() => validate('passwordConfirmation'), [state.passwordConfirmation])
 
-    setState(old => ({ ...old, nameError, emailError, passwordError, passwordConfirmationError, isFormInvalid }))
-  }, [state.name, state.email, state.password, state.passwordConfirmation])
+  const validate = (field: string): void => {
+    const { name, email, password, passwordConfirmation } = state
+    const formData = { name, email, password, passwordConfirmation }
+    setState(old => ({ ...old, [`${field}Error`]: validation.validate(field, formData) }))
+    setState(old => ({ ...old, isFormInvalid: !!old.nameError || !!old.emailError || !!old.passwordError || !!old.passwordConfirmationError }))
+  }
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
     event.preventDefault()
@@ -67,7 +70,7 @@ const SignUp: React.FC<Props> = ({ validation, addAccount }: Props) => {
   return (
     <div className={Styles.signupWrap}>
       <Header />
-      <FormContext.Provider value={{ state, setState } }>
+      <FormContext.Provider value={{ state, setState }}>
         <form className={Styles.form} onSubmit={handleSubmit} aria-label="form">
           <h2>Criar Conta</h2>
           <Input type="text" name="name" placeholder='Digite seu nome' />

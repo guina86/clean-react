@@ -12,26 +12,30 @@ type Props = {
   authentication: Authentication
 }
 
+const initialState = {
+  isLoading: false,
+  isFormInvalid: true,
+  email: '',
+  password: '',
+  emailError: '',
+  passwordError: '',
+  errorMessage: ''
+}
+
 const Login: React.FC<Props> = ({ validation, authentication }: Props) => {
   const { setCurrentAccount } = useContext(ApiContext)
   const navigate = useNavigate()
-  const [state, setState] = useState({
-    isLoading: false,
-    isFormInvalid: true,
-    email: '',
-    password: '',
-    emailError: '',
-    passwordError: '',
-    errorMessage: ''
-  })
-  useEffect(() => {
-    const formData = { email: state.email, password: state.password }
-    const emailError = validation.validate('email', formData)
-    const passwordError = validation.validate('password', formData)
-    const isFormInvalid = !!emailError || !!passwordError
+  const [state, setState] = useState(initialState)
 
-    setState(old => ({ ...old, emailError, passwordError, isFormInvalid }))
-  }, [state.email, state.password])
+  useEffect(() => validate('email'), [state.email])
+  useEffect(() => validate('password'), [state.password])
+
+  const validate = (field: string): void => {
+    const { email, password } = state
+    const formData = { email, password }
+    setState(old => ({ ...old, [`${field}Error`]: validation.validate(field, formData) }))
+    setState(old => ({ ...old, isFormInvalid: !!old.passwordError || !!old.emailError }))
+  }
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
     event.preventDefault()
@@ -59,7 +63,7 @@ const Login: React.FC<Props> = ({ validation, authentication }: Props) => {
   return (
     <div className={Styles.loginWrap}>
       <Header />
-      <FormContext.Provider value={{ state, setState } }>
+      <FormContext.Provider value={{ state, setState }}>
         <form className={Styles.form} onSubmit={handleSubmit} aria-label="form">
           <h2>Login</h2>
           <Input type="email" name="email" placeholder='Digite seu e-mail' />
