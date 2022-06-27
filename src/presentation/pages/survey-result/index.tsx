@@ -1,13 +1,16 @@
 import React from 'react'
 import Styles from './styles.scss'
-import { Footer, Header, Loading } from '@presentation/components'
+import { Calendar, Footer, Header, Loading } from '@presentation/components'
 
 const SurveyResult: React.FC = () => {
   return (
     <div className={Styles.surveyResultWrap}>
       <Header />
       <div className={Styles.contentWrap}>
-        <h2>Pergunta 1</h2>
+        <hgroup>
+          <Calendar date={new Date()} className={Styles.calendarWrap} />
+          <h2>Se você pudesse desenvolver um framework javascript, qual paradigma de programção você utilizaria?</h2>
+        </hgroup>
         <ul>
           <li>
             <img src="https://guina-node-api.herokuapp.com/static/img/logo-react.png" alt="" />
