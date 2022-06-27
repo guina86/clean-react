@@ -95,7 +95,7 @@
         margin-top: 1.6rem;
 
         &.active {
-          border: 0.2rem solid $primaryLight;
+          box-shadow: 0rem 0rem 0.3rem 0.2rem $primaryLight;
         }
 
         img {
