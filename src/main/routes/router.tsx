@@ -1,6 +1,6 @@
 import React from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import { Login, SignUp, SurveyList } from '@presentation/pages'
+import { Login, SignUp, SurveyList, SurveyResult } from '@presentation/pages'
 import { makeRemoteAuthentication, makeRemoteAddAccount, makeRemoteLoadSurveyList } from '@main/factories/usecases'
 import { makeLoginValidation, makeSignUpValidation } from '@main/factories/validation'
 import { ApiContext } from '@presentation/contexts'
@@ -29,6 +29,7 @@ const Router: React.FC = () => {
             <Route path="/" element={<SurveyList
               loadSurveyList={makeRemoteLoadSurveyList()}
             />} />
+            <Route path="/surveys" element={<SurveyResult />} />
           </Route>
         </Routes>
       </BrowserRouter>

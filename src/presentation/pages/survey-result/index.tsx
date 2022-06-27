@@ -1,6 +1,6 @@
 import React from 'react'
 import Styles from './styles.scss'
-import { Footer, Header, Spinner } from '@presentation/components'
+import { Footer, Header, Loading } from '@presentation/components'
 
 const SurveyResult: React.FC = () => {
   return (
@@ -26,12 +26,7 @@ const SurveyResult: React.FC = () => {
           </li>
         </ul>
         <button>Voltar</button>
-        <div className={Styles.loadingWrap}>
-          <div className={Styles.loading}>
-            <span>Aguarde...</span>
-            <Spinner isNegative />
-          </div>
-        </div>
+        {false && <Loading />}
       </div>
       <Footer />
     </div>
