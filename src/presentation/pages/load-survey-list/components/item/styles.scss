@@ -31,34 +31,9 @@
       right: -1rem;
     }
 
-    time {
-      display: flex;
-      flex-direction: column;
-      background-color: $primaryLight;
-      color: $white;
-      border-radius: 1rem;
+    .calendarWrap {
       margin-left: 2rem;
-      padding-bottom: .4rem;
       align-self: center;
-      align-items: center;
-      justify-content: center;
-      width: 6rem;
-      height: 10rem;
-      flex-shrink: 0;
-
-      .day {
-        font-size: 4rem;
-        font-weight: bold;
-      }
-
-      .month {
-        text-transform: lowercase;
-        margin: 0rem 0rem 0.5rem;
-      }
-
-      .year {
-        font-size: 1.6rem;
-      }
     }
 
     p {
