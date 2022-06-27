@@ -1,4 +1,4 @@
-import { RemoteLoadSurveyList } from '@data/usecases'
+import { RemoteLoadSurveyList, RemoteLoadSurveyResult } from '@data/usecases'
 import { LoadSurveyList } from '@domain/usecases'
 import { faker } from '@faker-js/faker'
 
@@ -23,3 +23,29 @@ export const mockRemoteSurvey = (didAnswer?: boolean, date?: string): RemoteLoad
 }
 
 export const mockRemoteSurveyList = (): RemoteLoadSurveyList.Model[] => [...Array(4)].map(() => mockRemoteSurvey())
+
+export const mockRemoteSurveyResult = (): RemoteLoadSurveyResult.Model => ({
+  question: faker.random.words(10),
+  answers: [
+    {
+      image: faker.internet.url(),
+      answer: faker.random.words(3),
+      count: faker.datatype.number(),
+      percent: faker.datatype.number()
+    },
+    {
+      image: faker.internet.url(),
+      answer: faker.random.words(3),
+      count: faker.datatype.number(),
+      percent: faker.datatype.number()
+    },
+    {
+      image: faker.internet.url(),
+      answer: faker.random.words(3),
+      count: faker.datatype.number(),
+      percent: faker.datatype.number()
+    }
+  ],
+  date: faker.date.recent().toISOString(),
+  isCurrentAccountAnswer: faker.datatype.boolean()
+})
