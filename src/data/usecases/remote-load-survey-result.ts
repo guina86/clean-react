@@ -23,7 +23,6 @@ export namespace RemoteLoadSurveyResult {
     question: string
     answers: Answer[]
     date: string
-    isCurrentAccountAnswer: boolean
   }
 
   type Answer = {
@@ -31,5 +30,6 @@ export namespace RemoteLoadSurveyResult {
     answer: string
     count: number
     percent: number
+    isCurrentAccountAnswer: boolean
   }
 }

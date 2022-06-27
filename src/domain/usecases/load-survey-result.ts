@@ -7,7 +7,6 @@ export namespace LoadSurveyResult {
     question: string
     answers: Answer[]
     date: Date
-    isCurrentAccountAnswer: boolean
   }
 
   type Answer = {
@@ -15,5 +14,6 @@ export namespace LoadSurveyResult {
     answer: string
     count: number
     percent: number
+    isCurrentAccountAnswer: boolean
   }
 }
