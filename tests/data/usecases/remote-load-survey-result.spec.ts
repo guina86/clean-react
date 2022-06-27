@@ -5,14 +5,11 @@ import { mock } from 'jest-mock-extended'
 
 describe('RemoteLoadSurveyResult', () => {
   const httpGetClientSpy = mock<HttpGetClient>()
-  let url: string
-
-  beforeEach(() => {
-    url = faker.internet.url()
-  })
+  const url = faker.internet.url()
+  const makeSut = (): RemoteLoadSurveyResult => new RemoteLoadSurveyResult(url, httpGetClientSpy)
 
   it('should call HttpGetClient with correct URL', async () => {
-    const sut = new RemoteLoadSurveyResult(url, httpGetClientSpy)
+    const sut = makeSut()
     await sut.load()
     expect(httpGetClientSpy.get).toHaveBeenCalledWith({ url })
   })
