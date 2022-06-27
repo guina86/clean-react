@@ -7,12 +7,12 @@ import { mockRemoteSurveyResult } from '../mocks/survey'
 
 describe('RemoteLoadSurveyResult', () => {
   const httpGetClientSpy = mock<HttpGetClient>()
-  const mockedSurveyResult = mockRemoteSurveyResult()
+  const remoteSurveyResultMock = mockRemoteSurveyResult()
   const url = faker.internet.url()
   const makeSut = (): RemoteLoadSurveyResult => new RemoteLoadSurveyResult(url, httpGetClientSpy)
 
   beforeAll(() => {
-    httpGetClientSpy.get.mockResolvedValue({ statusCode: 200, body: mockedSurveyResult })
+    httpGetClientSpy.get.mockResolvedValue({ statusCode: 200, body: remoteSurveyResultMock })
   })
 
   it('should call HttpGetClient with correct URL', async () => {
@@ -40,5 +40,12 @@ describe('RemoteLoadSurveyResult', () => {
     const sut = makeSut()
     const promise = sut.load()
     await expect(promise).rejects.toThrow(new UnexpectedError())
+  })
+
+  it('should return a surveyResult on 200', async () => {
+    const surveyResultMock = { ...remoteSurveyResultMock, date: new Date(remoteSurveyResultMock.date) }
+    const sut = makeSut()
+    const surveyResult = await sut.load()
+    expect(surveyResult).toEqual(surveyResultMock)
   })
 })
