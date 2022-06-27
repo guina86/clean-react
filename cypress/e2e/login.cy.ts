@@ -58,6 +58,7 @@ describe('Login', () => {
     mockApiSuccess(/login/, 'POST', { accessToken: 'any_access_token' }).as('request')
     cy.getByRole('email-input').type('otto@mail.com')
     cy.getByRole('password-input').type('12345')
+    cy.get('button').click()
     cy.get('button').dblclick()
     cy.get('@request.all').should('have.length', 1)
   })

@@ -70,7 +70,9 @@ describe('SignUp', () => {
     cy.getByRole('email-input').type('valie@email.com')
     cy.getByRole('password-input').type('12345')
     cy.getByRole('passwordConfirmation-input').type('12345')
+    cy.get('button').click()
     cy.get('button').dblclick()
+    cy.wait('@request')
     cy.get('@request.all').should('have.length', 1)
   })
 
