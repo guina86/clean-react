@@ -6,6 +6,12 @@
   width: 8rem;
   height: 1.3rem;
 
+  &.negative {
+    div {
+      background: $white;
+    }
+  }
+
   div {
     position: absolute;
     width: 1.3rem;

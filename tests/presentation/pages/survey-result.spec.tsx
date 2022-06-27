@@ -1,0 +1,4 @@
+describe('SurveyResult', () => {
+  it('should ', () => {
+  })
+})
