@@ -37,7 +37,8 @@ module.exports = merge(common, {
       'process.env.API_URL': JSON.stringify('https://guina-node-api.herokuapp.com/api')
     }),
     new HtmlWebpackPlugin({
-      template: './template.prod.html'
+      template: './template.prod.html',
+      favicon: './public/favicon.png'
     }),
     new MiniCssExtractPlugin({
       filename: 'main-bundle-[contenthash].css'
