@@ -31,19 +31,18 @@ export const mockRemoteSurveyResult = (): RemoteLoadSurveyResult.Model => ({
       image: faker.internet.url(),
       answer: faker.random.words(3),
       count: faker.datatype.number(),
-      percent: faker.datatype.number()
+      percent: faker.datatype.number({ min: 0, max: 100 })
+    },
+    {
+      answer: faker.random.words(3),
+      count: faker.datatype.number(),
+      percent: faker.datatype.number({ min: 0, max: 100 })
     },
     {
       image: faker.internet.url(),
       answer: faker.random.words(3),
       count: faker.datatype.number(),
-      percent: faker.datatype.number()
-    },
-    {
-      image: faker.internet.url(),
-      answer: faker.random.words(3),
-      count: faker.datatype.number(),
-      percent: faker.datatype.number()
+      percent: faker.datatype.number({ min: 0, max: 100 })
     }
   ],
   date: faker.date.recent().toISOString(),
