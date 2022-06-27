@@ -44,7 +44,7 @@ describe('RemoteLoadSurveyList', () => {
     await expect(promise).rejects.toThrow(new UnexpectedError())
   })
 
-  it('should throw UnexpectedError if HttpGetClient returns 404', async () => {
+  it('should throw UnexpectedError if HttpGetClient returns 500', async () => {
     httpGetClientSpy.get.mockResolvedValueOnce({ statusCode: HttpStatusCode.serverError })
     const promise = sut.loadAll()
 
