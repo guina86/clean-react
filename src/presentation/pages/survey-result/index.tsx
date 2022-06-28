@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import Styles from './styles.scss'
-import { Calendar, Error, Footer, Header, Loading } from '@presentation/components'
+import { SurveyResultData } from './components'
+import { Error, Footer, Header, Loading } from '@presentation/components'
 import { LoadSurveyResult } from '@domain/usecases'
 import { useErrorHandler } from '@presentation/hooks'
-import { useNavigate } from 'react-router-dom'
 
 const initialState = {
   isLoading: false,
@@ -18,7 +18,6 @@ type Props = {
 
 const SurveyResult: React.FC<Props> = ({ loadSurveyResult }: Props) => {
   const [state, setState] = useState(initialState)
-  const navigate = useNavigate()
 
   useEffect(() => {
     void loadSurveyResult.load().then(survey => {
@@ -38,24 +37,7 @@ const SurveyResult: React.FC<Props> = ({ loadSurveyResult }: Props) => {
     <div className={Styles.surveyResultWrap}>
       <Header />
       <div role="survey-container" className={Styles.contentWrap}>
-        {state.surveyResult &&
-          <>
-            <hgroup>
-              <Calendar date={state.surveyResult.date} className={Styles.calendarWrap} />
-              <h2 role="question">{state.surveyResult.question}</h2>
-            </hgroup>
-            <ul role="answers">
-              {state.surveyResult.answers.map(answer => (
-                <li role="answer-wrap" key={answer.answer} className={answer.isCurrentAccountAnswer ? Styles.active : ''}>
-                  {answer.image && <img role="answer-image" src={answer.image} alt={answer.answer} />}
-                  <span role="answer" className={Styles.answer}>{answer.answer}</span>
-                  <span role="answer-percent" className={Styles.percent}>{answer.percent}%</span>
-                </li>
-              ))}
-            </ul>
-            <button role="back-button" onClick={() => navigate(-1)}>Voltar</button>
-          </>
-        }
+        {state.surveyResult && <SurveyResultData surveyResult={state.surveyResult} />}
         {state.isLoading && <Loading />}
         {state.error && <Error error={state.error} reload={handleReload} />}
       </div>
