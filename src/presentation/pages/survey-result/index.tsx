@@ -14,38 +14,32 @@ type Props = {
 }
 
 const SurveyResult: React.FC<Props> = ({ loadSurveyResult }: Props) => {
-  const [state] = useState(initialState)
+  const [state, setState] = useState(initialState)
 
   useEffect(() => {
-    void loadSurveyResult.load().then().catch()
+    void loadSurveyResult.load().then(survey => {
+      setState(old => ({ ...old, surveyResult: survey }))
+    }).catch()
   }, [])
 
   return (
     <div className={Styles.surveyResultWrap}>
       <Header />
       <div role="survey-container" className={Styles.contentWrap}>
-        {false &&
+        {state.surveyResult &&
           <>
             <hgroup>
-              <Calendar date={new Date()} className={Styles.calendarWrap} />
-              <h2>Se você pudesse desenvolver um framework javascript, programção você utilizaria?</h2>
+              <Calendar date={state.surveyResult.date} className={Styles.calendarWrap} />
+              <h2 role="question">{state.surveyResult.question}</h2>
             </hgroup>
-            <ul>
-              <li>
-                <img src="https://guina-node-api.herokuapp.com/static/img/logo-react.png" alt="" />
-                <span className={Styles.answer}>resposta 1</span>
-                <span className={Styles.percent}>50%</span>
-              </li>
-              <li className={Styles.active}>
-                <img src="https://guina-node-api.herokuapp.com/static/img/logo-angular.png" alt="" />
-                <span className={Styles.answer}>resposta 2</span>
-                <span className={Styles.percent}>20%</span>
-              </li>
-              <li>
-                <img src="https://guina-node-api.herokuapp.com/static/img/logo-flutter.png" alt="" />
-                <span className={Styles.answer}>resposta 3</span>
-                <span className={Styles.percent}>30%</span>
-              </li>
+            <ul role="answers">
+              {state.surveyResult.answers.map(answer => (
+                <li role="answer-wrap" key={answer.answer} className={answer.isCurrentAccountAnswer ? Styles.active : ''}>
+                  {answer.image && <img role="answer-image" src={answer.image} alt={answer.answer} />}
+                  <span role="answer" className={Styles.answer}>{answer.answer}</span>
+                  <span role="answer-percent" className={Styles.percent}>{answer.percent}%</span>
+                </li>
+              ))}
             </ul>
             <button>Voltar</button>
           </>
