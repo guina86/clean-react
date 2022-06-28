@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Styles from './styles.scss'
 import { Calendar, Error, Footer, Header, Loading } from '@presentation/components'
 import { LoadSurveyResult } from '@domain/usecases'
+import { useErrorHandler } from '@presentation/hooks'
 
 const initialState = {
   isLoading: false,
@@ -19,8 +20,12 @@ const SurveyResult: React.FC<Props> = ({ loadSurveyResult }: Props) => {
   useEffect(() => {
     void loadSurveyResult.load().then(survey => {
       setState(old => ({ ...old, surveyResult: survey }))
-    }).catch()
+    }).catch(handleError)
   }, [])
+
+  const handleError = useErrorHandler(error => {
+    setState(old => ({ ...old, surveyResult: undefined, error: error.message }))
+  })
 
   return (
     <div className={Styles.surveyResultWrap}>
