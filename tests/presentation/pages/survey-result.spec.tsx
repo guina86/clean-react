@@ -7,14 +7,14 @@ import { createMemoryHistory } from 'history'
 import mock from 'jest-mock-extended/lib/Mock'
 import { LoadSurveyResult } from '@domain/usecases'
 import { mockSurveyResult } from '@tests/data/mocks/survey'
+import { UnexpectedError } from '@domain/errors'
 
 describe('SurveyResult', () => {
   const loadSurveyResultSpy = mock<LoadSurveyResult>()
   const history = createMemoryHistory({ initialEntries: ['/'] })
+  const surveyResult = mockSurveyResult(new Date('2022-01-10T00:00:00'))
 
   const renderSut = (date?: Date): LoadSurveyResult.Model => {
-    const surveyResult = mockSurveyResult(date)
-    loadSurveyResultSpy.load.mockResolvedValue(surveyResult)
     render(
       <ApiContext.Provider value={{ getCurrentAccount: jest.fn(), setCurrentAccount: jest.fn() }}>
         <Router location={history.location} navigator={history}>
@@ -24,6 +24,10 @@ describe('SurveyResult', () => {
     )
     return surveyResult
   }
+
+  beforeAll(() => {
+    loadSurveyResultSpy.load.mockResolvedValue(surveyResult)
+  })
 
   beforeEach(() => {
     jest.clearAllMocks()
@@ -45,7 +49,7 @@ describe('SurveyResult', () => {
   })
 
   it('should present SurveyResult data on success', async () => {
-    const surveyResult = renderSut(new Date('2022-01-10T00:00:00'))
+    const surveyResult = renderSut()
     await screen.findByRole('date-day')
     expect(screen.getByRole('date-day')).toHaveTextContent('10')
     expect(screen.getByRole('date-month')).toHaveTextContent('jan')
@@ -65,5 +69,15 @@ describe('SurveyResult', () => {
     const percents = screen.getAllByRole('answer-percent')
     expect(percents[0]).toHaveTextContent(`${surveyResult.answers[0].percent}%`)
     expect(percents[1]).toHaveTextContent(`${surveyResult.answers[1].percent}%`)
+  })
+
+  it('should render error on UnexpectedError', async () => {
+    const error = new UnexpectedError()
+    loadSurveyResultSpy.load.mockRejectedValueOnce(error)
+    renderSut()
+    const errorComponent = await screen.findByRole('error-message')
+    expect(screen.queryByRole('question')).not.toBeInTheDocument()
+    expect(screen.queryByRole('loading')).not.toBeInTheDocument()
+    expect(errorComponent).toHaveTextContent(error.message)
   })
 })
