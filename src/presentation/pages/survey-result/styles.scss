@@ -101,11 +101,12 @@
         img {
           width: 5rem;
           heigh: 5rem;
+          margin-right: 2rem;
         }
 
         .answer {
           flex-grow: 1;
-          margin: 0 2rem;
+          margin-right: 2rem;
           font-size: 2rem;
           color: $primaryDark;
         }
