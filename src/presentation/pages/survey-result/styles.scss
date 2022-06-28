@@ -100,7 +100,7 @@
 
         img {
           width: 5rem;
-          heigh: 5rem;
+          height: 5rem;
           margin-right: 2rem;
         }
 
@@ -119,6 +119,7 @@
 
     button {
       margin-top: 2.4rem;
+      cursor: pointer;
     }
   }
 }
@@ -168,7 +169,7 @@
         li {
           img {
             width: 4rem;
-            heigh: 4rem;
+            height: 4rem;
           }
   
           .answer {

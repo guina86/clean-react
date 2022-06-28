@@ -3,6 +3,7 @@ import Styles from './styles.scss'
 import { Calendar, Error, Footer, Header, Loading } from '@presentation/components'
 import { LoadSurveyResult } from '@domain/usecases'
 import { useErrorHandler } from '@presentation/hooks'
+import { useNavigate } from 'react-router-dom'
 
 const initialState = {
   isLoading: false,
@@ -17,6 +18,7 @@ type Props = {
 
 const SurveyResult: React.FC<Props> = ({ loadSurveyResult }: Props) => {
   const [state, setState] = useState(initialState)
+  const navigate = useNavigate()
 
   useEffect(() => {
     void loadSurveyResult.load().then(survey => {
@@ -51,7 +53,7 @@ const SurveyResult: React.FC<Props> = ({ loadSurveyResult }: Props) => {
                 </li>
               ))}
             </ul>
-            <button>Voltar</button>
+            <button role="back-button" onClick={() => navigate(-1)}>Voltar</button>
           </>
         }
         {state.isLoading && <Loading />}
