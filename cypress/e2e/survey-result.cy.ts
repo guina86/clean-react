@@ -1,4 +1,4 @@
-import { setLocalStorageItem } from '../utils/helpers'
+import { setLocalStorageItem, testUrl } from '../utils/helpers'
 import { mockApiError, mockApiSuccess } from '../utils/http-mock'
 
 describe('SurveyResult', () => {
@@ -21,5 +21,11 @@ describe('SurveyResult', () => {
     mockApiSuccess(/api\/surveys/, 'GET', surveyResult)
     cy.get('button').click()
     cy.getByRole('question').should('exist')
+  })
+
+  it('Should present error on UnexpectedError', () => {
+    mockApiError(/api\/surveys/, 'GET', 403)
+    cy.visit('/surveys/any_id')
+    testUrl('/login')
   })
 })
