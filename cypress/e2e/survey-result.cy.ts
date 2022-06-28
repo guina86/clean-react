@@ -48,4 +48,12 @@ describe('SurveyResult', () => {
       assert.notExists(li.find('[role="answer-image"]'))
     })
   })
+
+  it('Should go to SurveyList on back button click', () => {
+    cy.visit('')
+    mockApiSuccess(/api\/surveys/, 'GET', surveyResult)
+    cy.visit('/surveys/any_id')
+    cy.getByRole('back-button').click()
+    testUrl('/')
+  })
 })
