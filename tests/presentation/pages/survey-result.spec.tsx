@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import { SurveyResult } from '@presentation/pages'
 import { ApiContext } from '@presentation/contexts'
 import { Router } from 'react-router-dom'
@@ -7,16 +7,17 @@ import { createMemoryHistory } from 'history'
 import mock from 'jest-mock-extended/lib/Mock'
 import { LoadSurveyResult } from '@domain/usecases'
 import { mockSurveyResult } from '@tests/data/mocks/survey'
-import { UnexpectedError } from '@domain/errors'
+import { AccessDeniedError, UnexpectedError } from '@domain/errors'
 
 describe('SurveyResult', () => {
   const loadSurveyResultSpy = mock<LoadSurveyResult>()
   const history = createMemoryHistory({ initialEntries: ['/'] })
   const surveyResult = mockSurveyResult(new Date('2022-01-10T00:00:00'))
+  const setCurrentAccountMock = jest.fn()
 
   const renderSut = (date?: Date): LoadSurveyResult.Model => {
     render(
-      <ApiContext.Provider value={{ getCurrentAccount: jest.fn(), setCurrentAccount: jest.fn() }}>
+      <ApiContext.Provider value={{ getCurrentAccount: jest.fn(), setCurrentAccount: setCurrentAccountMock }}>
         <Router location={history.location} navigator={history}>
           <SurveyResult loadSurveyResult={loadSurveyResultSpy} />
         </Router>
@@ -79,5 +80,15 @@ describe('SurveyResult', () => {
     expect(screen.queryByRole('question')).not.toBeInTheDocument()
     expect(screen.queryByRole('loading')).not.toBeInTheDocument()
     expect(errorComponent).toHaveTextContent(error.message)
+  })
+
+  it('should logout on AccessDeniedError', async () => {
+    loadSurveyResultSpy.load.mockRejectedValueOnce(new AccessDeniedError())
+    renderSut()
+    await waitFor(() => {
+      expect(history.location.pathname).toBe('/login')
+    })
+    expect(setCurrentAccountMock).toHaveBeenCalledWith(undefined)
+    expect(setCurrentAccountMock).toHaveBeenCalledTimes(1)
   })
 })
