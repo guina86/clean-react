@@ -7,7 +7,8 @@ import { useErrorHandler } from '@presentation/hooks'
 const initialState = {
   isLoading: false,
   error: '',
-  surveyResult: undefined as LoadSurveyResult.Model | undefined
+  surveyResult: undefined as LoadSurveyResult.Model | undefined,
+  reload: false
 }
 
 type Props = {
@@ -21,11 +22,15 @@ const SurveyResult: React.FC<Props> = ({ loadSurveyResult }: Props) => {
     void loadSurveyResult.load().then(survey => {
       setState(old => ({ ...old, surveyResult: survey }))
     }).catch(handleError)
-  }, [])
+  }, [state.reload])
 
   const handleError = useErrorHandler(error => {
     setState(old => ({ ...old, surveyResult: undefined, error: error.message }))
   })
+
+  const handleReload = (): void => {
+    setState(old => ({ surveyResult: undefined, error: '', reload: !old.reload, isLoading: false }))
+  }
 
   return (
     <div className={Styles.surveyResultWrap}>
@@ -50,7 +55,7 @@ const SurveyResult: React.FC<Props> = ({ loadSurveyResult }: Props) => {
           </>
         }
         {state.isLoading && <Loading />}
-        {state.error && <Error error={state.error} reload={() => { }} />}
+        {state.error && <Error error={state.error} reload={handleReload} />}
       </div>
       <Footer />
     </div>
