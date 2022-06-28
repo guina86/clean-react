@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Styles from './styles.scss'
 import { Calendar, Error, Footer, Header, Loading } from '@presentation/components'
 import { LoadSurveyResult } from '@domain/usecases'
@@ -9,8 +9,16 @@ const initialState = {
   surveyResult: undefined as LoadSurveyResult.Model | undefined
 }
 
-const SurveyResult: React.FC = () => {
+type Props = {
+  loadSurveyResult: LoadSurveyResult
+}
+
+const SurveyResult: React.FC<Props> = ({ loadSurveyResult }: Props) => {
   const [state] = useState(initialState)
+
+  useEffect(() => {
+    void loadSurveyResult.load().then().catch()
+  }, [])
 
   return (
     <div className={Styles.surveyResultWrap}>
