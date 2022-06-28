@@ -1,11 +1,12 @@
 import React from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import { Login, SignUp, SurveyList, SurveyResult } from '@presentation/pages'
-import { makeRemoteAuthentication, makeRemoteAddAccount, makeRemoteLoadSurveyList } from '@main/factories/usecases'
-import { makeLoginValidation, makeSignUpValidation } from '@main/factories/validation'
 import { ApiContext } from '@presentation/contexts'
 import { getCurrentAccountAdapter, setCurrentAccountAdapter } from '@main/adapters/current-account-adapter'
 import { PrivateRoute } from '@presentation/components'
+import { SurveyResultFactory } from '@main/factories/pages/SurveyResult'
+import { LoginFactory } from '@main/factories/pages/Login'
+import { SignUpFactory } from '@main/factories/pages/Signup'
+import { SurveyListFactory } from '@main/factories/pages'
 
 const Router: React.FC = () => {
   return (
@@ -15,25 +16,15 @@ const Router: React.FC = () => {
     }}>
       <BrowserRouter>
         <Routes>
-          <Route path="/login" element={<Login
-            authentication={makeRemoteAuthentication()}
-            validation={makeLoginValidation()}
-          />
-          } />
-          <Route path="/signup" element={<SignUp
-            addAccount={makeRemoteAddAccount()}
-            validation={makeSignUpValidation()}
-          />
-          } />
+          <Route path="/login" element={<LoginFactory />} />
+          <Route path="/signup" element={<SignUpFactory />} />
           <Route element={<PrivateRoute />}>
-            <Route path="/" element={<SurveyList
-              loadSurveyList={makeRemoteLoadSurveyList()}
-            />} />
-            <Route path="/surveys" element={<SurveyResult />} />
+            <Route path="/" element={<SurveyListFactory />} />
+            <Route path="/surveys/:id" element={<SurveyResultFactory />} />
           </Route>
         </Routes>
       </BrowserRouter>
-    </ApiContext.Provider>
+    </ApiContext.Provider >
   )
 }
 
