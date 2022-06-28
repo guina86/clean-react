@@ -24,7 +24,7 @@ export const mockRemoteSurvey = (didAnswer?: boolean, date?: string): RemoteLoad
 
 export const mockRemoteSurveyList = (): RemoteLoadSurveyList.Model[] => [...Array(4)].map(() => mockRemoteSurvey())
 
-export const mockSurveyResult = (): LoadSurveyResult.Model => ({
+export const mockSurveyResult = (date?: Date): LoadSurveyResult.Model => ({
   question: faker.random.words(10),
   answers: [
     {
@@ -32,23 +32,16 @@ export const mockSurveyResult = (): LoadSurveyResult.Model => ({
       answer: faker.random.words(3),
       count: faker.datatype.number(),
       percent: faker.datatype.number({ min: 0, max: 100 }),
-      isCurrentAccountAnswer: false
-    },
-    {
-      answer: faker.random.words(3),
-      count: faker.datatype.number(),
-      percent: faker.datatype.number({ min: 0, max: 100 }),
       isCurrentAccountAnswer: true
     },
     {
-      image: faker.internet.url(),
       answer: faker.random.words(3),
       count: faker.datatype.number(),
       percent: faker.datatype.number({ min: 0, max: 100 }),
       isCurrentAccountAnswer: false
     }
   ],
-  date: faker.date.recent()
+  date: date ?? faker.date.recent()
 })
 
 export const mockRemoteSurveyResult = (): RemoteLoadSurveyResult.Model => {
