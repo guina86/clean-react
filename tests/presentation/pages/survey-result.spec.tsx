@@ -3,7 +3,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { SurveyResult } from '@presentation/pages'
 import { ApiContext } from '@presentation/contexts'
 import { Router } from 'react-router-dom'
-import { createMemoryHistory } from 'history'
+import { createMemoryHistory, MemoryHistory } from 'history'
 import mock from 'jest-mock-extended/lib/Mock'
 import { LoadSurveyResult } from '@domain/usecases'
 import { mockSurveyResult } from '@tests/data/mocks/survey'
@@ -11,7 +11,7 @@ import { AccessDeniedError, UnexpectedError } from '@domain/errors'
 
 describe('SurveyResult', () => {
   const loadSurveyResultSpy = mock<LoadSurveyResult>()
-  const history = createMemoryHistory({ initialEntries: ['/'] })
+  let history: MemoryHistory
   const surveyResult = mockSurveyResult(new Date('2022-01-10T00:00:00'))
   const setCurrentAccountMock = jest.fn()
 
@@ -31,6 +31,7 @@ describe('SurveyResult', () => {
   })
 
   beforeEach(() => {
+    history = createMemoryHistory({ initialEntries: ['/', '/surveys/any_id'], initialIndex: 1 })
     jest.clearAllMocks()
   })
 
@@ -99,5 +100,12 @@ describe('SurveyResult', () => {
     fireEvent.click(screen.getByRole('button'))
     await screen.findByRole('survey-container')
     expect(loadSurveyResultSpy.load).toHaveBeenCalledTimes(2)
+  })
+
+  it('should go to SurveyList on back button click', async () => {
+    renderSut()
+    await screen.findByRole('question')
+    fireEvent.click(screen.getByRole('back-button'))
+    expect(history.location.pathname).toBe('/')
   })
 })
