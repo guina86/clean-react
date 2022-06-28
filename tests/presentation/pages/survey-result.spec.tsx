@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { SurveyResult } from '@presentation/pages'
 import { ApiContext } from '@presentation/contexts'
 import { Router } from 'react-router-dom'
@@ -90,5 +90,14 @@ describe('SurveyResult', () => {
     })
     expect(setCurrentAccountMock).toHaveBeenCalledWith(undefined)
     expect(setCurrentAccountMock).toHaveBeenCalledTimes(1)
+  })
+
+  it('should call LoadSurveyResult on reload', async () => {
+    loadSurveyResultSpy.load.mockRejectedValueOnce(new UnexpectedError())
+    renderSut()
+    await screen.findByRole('error-message')
+    fireEvent.click(screen.getByRole('button'))
+    await screen.findByRole('survey-container')
+    expect(loadSurveyResultSpy.load).toHaveBeenCalledTimes(2)
   })
 })
