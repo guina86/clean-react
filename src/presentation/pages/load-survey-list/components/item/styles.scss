@@ -46,15 +46,20 @@
 
   footer {
     background-color: $primary;
-    color: $white;
-    line-height: 4rem;
-    text-transform: lowercase;
-    text-align: center;
     cursor: pointer;
     border-radius: 0rem 0rem 1rem 1rem;
-
+    
     &:hover {
       background-color: $primaryDark;
+    }
+    
+    a {
+      color: $white;
+      line-height: 4rem;
+      text-transform: lowercase;
+      text-align: center;
+      display: block;
+      text-decoration: none;
     }
   }
 }
