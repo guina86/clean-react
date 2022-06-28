@@ -1,1 +1,1 @@
-export * from './auth-http-get-client-decorator'
+export * from './auth-http-client-decorator'
