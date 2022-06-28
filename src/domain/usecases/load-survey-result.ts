@@ -9,7 +9,7 @@ export namespace LoadSurveyResult {
     date: Date
   }
 
-  type Answer = {
+  export type Answer = {
     image?: string
     answer: string
     count: number

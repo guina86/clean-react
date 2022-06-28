@@ -22,39 +22,6 @@ hgroup {
   list-style: none;
   display: flex;
   flex-direction: column;
-
-
-  li {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    background-color: $white;
-    align-items: center;
-    padding: 2rem;
-    border-radius: 1rem;
-    margin-top: 1.6rem;
-
-    &.active {
-      box-shadow: 0rem 0rem 0.3rem 0.2rem $primaryLight;
-    }
-
-    img {
-      width: 5rem;
-      height: 5rem;
-      margin-right: 2rem;
-    }
-
-    .answer {
-      flex-grow: 1;
-      margin-right: 2rem;
-      font-size: 2rem;
-      color: $primaryDark;
-    }
-
-    .percent {
-      font-size: 3rem;
-    }
-  }
 }
 
 .button {
@@ -70,24 +37,6 @@ hgroup {
 
     .calendarWrap {
       width: 6rem;
-    }
-  }
-
-  .answerList {
-    li {
-      img {
-        width: 4rem;
-        height: 4rem;
-      }
-
-      .answer {
-        font-size: 1.8rem;
-        color: $primaryDark;
-      }
-
-      .percent {
-        font-size: 2rem;
-      }
     }
   }
 }
