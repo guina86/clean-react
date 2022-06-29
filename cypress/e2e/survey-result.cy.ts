@@ -3,6 +3,7 @@ import { mockApiError, mockApiSuccess } from '../utils/http-mock'
 
 describe('SurveyResult', () => {
   let surveyResult: any
+
   beforeEach(function () {
     cy.fixture('survey-result').then((data) => { surveyResult = data })
     setLocalStorageItem('account', { accessToken: 'any_token', name: 'any_name' })
@@ -23,7 +24,7 @@ describe('SurveyResult', () => {
     cy.getByRole('question').should('exist')
   })
 
-  it('Should present error on UnexpectedError', () => {
+  it('Should logouton AccessDeniedError', () => {
     mockApiError(/api\/surveys/, 'GET', 403)
     cy.visit('/surveys/any_id')
     testUrl('/login')
@@ -55,5 +56,13 @@ describe('SurveyResult', () => {
     cy.visit('/surveys/any_id')
     cy.getByRole('back-button').click()
     testUrl('/')
+  })
+
+  it.only('Should present error on UnexpectedError', () => {
+    mockApiSuccess(/api\/surveys/, 'GET', surveyResult)
+    mockApiError(/api\/surveys/, 'PUT', 400)
+    cy.visit('/surveys/any_id')
+    cy.get('li:nth-child(2)').click()
+    cy.getByRole('error-message').should('contain.text', 'Algo de errado aconteceu. Tente novamente em breve.')
   })
 })
