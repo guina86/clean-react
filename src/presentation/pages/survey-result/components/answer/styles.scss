@@ -10,10 +10,15 @@
   border-radius: 1rem;
   margin-top: 1.6rem;
   cursor: pointer;
+  box-shadow: 0rem 0.1rem 0.3rem -0.1rem $black;
 
   &.active {
     box-shadow: 0rem 0rem 0.3rem 0.2rem $primaryLight;
     cursor: default;
+  }
+
+  &:hover {
+    box-shadow: 0rem 0rem 0.2rem 0.2rem $primaryLight;
   }
 
   img {
