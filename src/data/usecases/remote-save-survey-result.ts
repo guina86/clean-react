@@ -11,7 +11,8 @@ export class RemoteSaveSurveyResult {
   async save (params: SaveSurveyResult.Params): Promise<void> {
     await this.httpClient.request({
       url: this.url,
-      method: 'put'
+      method: 'put',
+      body: params
     })
   }
 }
