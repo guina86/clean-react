@@ -144,4 +144,18 @@ describe('SurveyResult', () => {
     expect(screen.queryByRole('loading')).not.toBeInTheDocument()
     expect(errorComponent).toHaveTextContent(error.message)
   })
+
+  it('should render error on AccessDeniedError', async () => {
+    const error = new AccessDeniedError()
+    saveSurveyResultSpy.save.mockRejectedValueOnce(error)
+    renderSut()
+    await screen.findByRole('question')
+    const answersWraps = screen.getAllByRole('answer-wrap')
+    fireEvent.click(answersWraps[1])
+    await waitFor(() => {
+      expect(history.location.pathname).toBe('/login')
+    })
+    expect(setCurrentAccountMock).toHaveBeenCalledWith(undefined)
+    expect(setCurrentAccountMock).toHaveBeenCalledTimes(1)
+  })
 })
