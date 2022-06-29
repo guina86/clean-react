@@ -41,4 +41,11 @@ describe('RemoteSaveSurveyResult', () => {
     const promise = sut.save({ answer: 'any_answer' })
     await expect(promise).rejects.toThrow(new UnexpectedError())
   })
+
+  it('should return a surveyResult on 200', async () => {
+    const surveyResultMock = { ...remoteSurveyResultMock, date: new Date(remoteSurveyResultMock.date) }
+    const sut = makeSut()
+    const surveyResult = await sut.save({ answer: 'any_answer' })
+    expect(surveyResult).toEqual(surveyResultMock)
+  })
 })
