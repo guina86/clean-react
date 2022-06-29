@@ -1,6 +1,6 @@
 import { HttpClient, HttpStatusCode } from '@data/protocols'
 import { RemoteSaveSurveyResult } from '@data/usecases'
-import { AccessDeniedError } from '@domain/errors'
+import { AccessDeniedError, UnexpectedError } from '@domain/errors'
 import { faker } from '@faker-js/faker'
 import { mock } from 'jest-mock-extended'
 import { mockRemoteSurveyResult } from '../mocks/survey'
@@ -26,5 +26,19 @@ describe('RemoteSaveSurveyResult', () => {
     const sut = makeSut()
     const promise = sut.save({ answer: 'any_answer' })
     await expect(promise).rejects.toThrow(new AccessDeniedError())
+  })
+
+  it('should throw UnexpectedError if HttpClient returns 404', async () => {
+    httpClientSpy.request.mockResolvedValueOnce({ statusCode: HttpStatusCode.notFound })
+    const sut = makeSut()
+    const promise = sut.save({ answer: 'any_answer' })
+    await expect(promise).rejects.toThrow(new UnexpectedError())
+  })
+
+  it('should throw UnexpectedError if HttpClient returns 500', async () => {
+    httpClientSpy.request.mockResolvedValueOnce({ statusCode: HttpStatusCode.serverError })
+    const sut = makeSut()
+    const promise = sut.save({ answer: 'any_answer' })
+    await expect(promise).rejects.toThrow(new UnexpectedError())
   })
 })
