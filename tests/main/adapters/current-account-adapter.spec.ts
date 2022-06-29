@@ -1,5 +1,5 @@
-import { LocalStorageAdapter } from '@infra/cache'
 import { getCurrentAccountAdapter, setCurrentAccountAdapter } from '@main/adapters/current-account-adapter'
+import { LocalStorageAdapter } from '@infra/cache'
 
 jest.mock('@infra/cache/local-storage-adapter')
 
@@ -8,6 +8,7 @@ describe('CurrentAccountAdapter', () => {
 
   it('should call LocalStorageAdapter.set with correct values', () => {
     const setSpy = jest.spyOn(LocalStorageAdapter.prototype, 'set')
+
     setCurrentAccountAdapter(accountMock)
 
     expect(setSpy).toHaveBeenCalledWith('account', accountMock)
@@ -15,6 +16,7 @@ describe('CurrentAccountAdapter', () => {
 
   it('should call LocalStorageAdapter.get with correct values', () => {
     const getSpy = jest.spyOn(LocalStorageAdapter.prototype, 'get').mockReturnValueOnce(accountMock)
+
     const account = getCurrentAccountAdapter()
 
     expect(getSpy).toHaveBeenCalledWith('account')

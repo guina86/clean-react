@@ -1,5 +1,5 @@
-import { ValidationFacade } from '@presentation/validation/validators'
 import { makeSignUpValidation } from '@main/factories/validation'
+import { ValidationFacade } from '@presentation/validation/validators'
 
 describe('SignUpValidationFactory', () => {
   it('should make ValidationComposite with correct validations', () => {
