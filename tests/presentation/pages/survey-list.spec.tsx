@@ -3,7 +3,7 @@ import { ApiContext } from '@presentation/contexts'
 import { LoadSurveyList } from '@domain/usecases'
 import { AccessDeniedError, UnexpectedError } from '@domain/errors'
 import { mockSurveyList } from '@tests/data/mocks'
-import { fireEvent, render, RenderResult, screen, waitFor, waitForElementToBeRemoved } from '@testing-library/react'
+import { fireEvent, render, RenderResult, screen, waitFor } from '@testing-library/react'
 import { createMemoryHistory, MemoryHistory } from 'history'
 import { mock } from 'jest-mock-extended'
 import { Router } from 'react-router-dom'
@@ -30,35 +30,37 @@ describe('SurveyList', () => {
     history = createMemoryHistory({ initialEntries: ['/'] })
   })
 
-  it.only('should present 4 empty items on start', async () => {
+  it('should present 4 empty items on start', async () => {
     renderSut()
 
-    const surveyList = screen.getByRole('survey-list')
+    const surveyList = await screen.findByRole('survey-list')
     expect(surveyList.querySelectorAll('li:empty')).toHaveLength(4)
     expect(screen.queryByRole('error-message')).not.toBeInTheDocument()
-    await waitFor(() => surveyList)
   })
 
   it('should call LoadSurveyList', async () => {
     renderSut()
+
+    await screen.findAllByRole('survey-item')
     expect(loadSurveyListSpy.loadAll).toHaveBeenCalledTimes(1)
-    await waitForElementToBeRemoved(screen.queryByRole('empty-item'))
   })
 
   it('should render surveyItems on success', async () => {
     renderSut()
-    await screen.findAllByRole('survey-item')
-    const surveyList = screen.getByRole('survey-list')
-    expect(surveyList.querySelectorAll('li.surveyItemWrap')).toHaveLength(4)
+
+    const suveryItems = await screen.findAllByRole('survey-item')
+    expect(suveryItems.length).toBe(4)
     expect(screen.queryByRole('error-message')).not.toBeInTheDocument()
   })
 
   it('should call LoadSurveyList on reload', async () => {
     loadSurveyListSpy.loadAll.mockRejectedValueOnce(new UnexpectedError())
     renderSut()
-    await waitForElementToBeRemoved(screen.queryByRole('survey-list'))
+
+    await screen.findByRole('error-message')
     fireEvent.click(screen.getByRole('button'))
-    await waitForElementToBeRemoved(screen.queryByRole('empty-item'))
+
+    await screen.findAllByRole('survey-item')
     expect(loadSurveyListSpy.loadAll).toHaveBeenCalledTimes(2)
   })
 
@@ -66,16 +68,15 @@ describe('SurveyList', () => {
     const error = new UnexpectedError()
     loadSurveyListSpy.loadAll.mockRejectedValueOnce(error)
     renderSut()
-    await waitForElementToBeRemoved(screen.queryByRole('survey-list'))
-    expect(screen.getByRole('error-message')).toHaveTextContent(error.message)
+
+    expect(await screen.findByRole('error-message')).toHaveTextContent(error.message)
   })
 
   it('should logout on AccessDeniedError', async () => {
     loadSurveyListSpy.loadAll.mockRejectedValueOnce(new AccessDeniedError())
     renderSut()
-    await waitFor(() => {
-      expect(history.location.pathname).toBe('/login')
-    })
+
+    await waitFor(() => expect(history.location.pathname).toBe('/login'))
     expect(setCurrentAccountMock).toHaveBeenCalledWith(undefined)
     expect(setCurrentAccountMock).toHaveBeenCalledTimes(1)
   })
