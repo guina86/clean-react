@@ -108,4 +108,12 @@ describe('SurveyResult', () => {
     fireEvent.click(screen.getByRole('back-button'))
     expect(history.location.pathname).toBe('/')
   })
+
+  it('should not present loading on active answer click', async () => {
+    renderSut()
+    await screen.findByRole('question')
+    const answersWraps = screen.getAllByRole('answer-wrap')
+    fireEvent.click(answersWraps[0])
+    expect(screen.queryByRole('loading')).not.toBeInTheDocument()
+  })
 })
