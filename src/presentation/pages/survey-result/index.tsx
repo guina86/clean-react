@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react'
 import Styles from './styles.scss'
-import { SurveyResultContext, SurveyResultData } from './components'
-import { Error, Footer, Header, Loading } from '@presentation/components'
 import { LoadSurveyResult, SaveSurveyResult } from '@domain/usecases'
+import { Error, Footer, Header, Loading } from '@presentation/components'
+import { SurveyResultContext, SurveyResultData } from '@presentation/pages/survey-result/components'
 import { useErrorHandler } from '@presentation/hooks'
+import React, { useEffect, useState } from 'react'
 
 const initialState = {
   isLoading: false,

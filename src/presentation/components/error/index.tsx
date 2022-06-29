@@ -1,6 +1,5 @@
-import React from 'react'
-
 import Styles from './styles.scss'
+import React from 'react'
 
 type Props = {
   error: string

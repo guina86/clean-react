@@ -1,9 +1,9 @@
+import Styles from './styles.scss'
 import { LoadSurveyList } from '@domain/usecases'
 import { Error, Footer, Header } from '@presentation/components'
+import { SurveyListItems } from '@presentation/pages/load-survey-list/components'
 import { useErrorHandler } from '@presentation/hooks'
 import React, { useEffect, useState } from 'react'
-import { SurveyListItems } from './components'
-import Styles from './styles.scss'
 
 type Props = {
   loadSurveyList: LoadSurveyList

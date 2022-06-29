@@ -1,6 +1,6 @@
 import { SurveyList } from '@presentation/pages'
-import React from 'react'
 import { makeRemoteLoadSurveyList } from '@main/factories/usecases'
+import React from 'react'
 
 export const SurveyListFactory: React.FC = () => {
   return (

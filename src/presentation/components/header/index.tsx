@@ -1,8 +1,8 @@
-import React, { memo, MouseEvent, useContext } from 'react'
-import { Logo } from '@presentation/components'
 import Styles from './styles.scss'
+import { Logo } from '@presentation/components'
 import { ApiContext } from '@presentation/contexts'
 import { useLogout } from '@presentation/hooks'
+import React, { memo, MouseEvent, useContext } from 'react'
 
 const Header: React.FC = () => {
   const logout = useLogout()

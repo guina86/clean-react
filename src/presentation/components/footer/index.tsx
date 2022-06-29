@@ -1,5 +1,5 @@
-import React, { memo } from 'react'
 import Styles from './styles.scss'
+import React, { memo } from 'react'
 
 const Footer: React.FC = () => {
   return (

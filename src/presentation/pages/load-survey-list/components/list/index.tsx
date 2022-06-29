@@ -1,7 +1,7 @@
-import React from 'react'
 import Styles from './styles.scss'
-import { SurveyItem, SurveyItemEmpty } from '..'
 import { LoadSurveyList } from '@domain/usecases'
+import { SurveyItem, SurveyItemEmpty } from '@presentation/pages/load-survey-list/components'
+import React from 'react'
 
 type Props = {
   surveys: LoadSurveyList.Model[]

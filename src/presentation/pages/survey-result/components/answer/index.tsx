@@ -1,7 +1,7 @@
-import { SurveyResultAnswerModel } from '@domain/model'
-import React, { MouseEvent, useContext } from 'react'
-import { SurveyResultContext } from '..'
 import Styles from './styles.scss'
+import { SurveyResultAnswerModel } from '@domain/model'
+import { SurveyResultContext } from '@presentation/pages/survey-result/components'
+import React, { MouseEvent, useContext } from 'react'
 
 type Props = {
   answer: SurveyResultAnswerModel

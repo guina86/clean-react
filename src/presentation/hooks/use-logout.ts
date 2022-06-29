@@ -1,6 +1,6 @@
 import { ApiContext } from '@presentation/contexts'
-import { useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useContext } from 'react'
 
 type ResultType = () => void
 

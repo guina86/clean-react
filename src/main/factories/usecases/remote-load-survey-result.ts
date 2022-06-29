@@ -1,7 +1,6 @@
 import { RemoteLoadSurveyResult } from '@data/usecases'
-import { makeApiUrl } from '@main/factories/http'
 import { makeAuthHttpClientDecorator } from '@main/factories/decorators'
-import { LoadSurveyResult } from '@domain/usecases'
+import { makeApiUrl } from '@main/factories/http'
 
-export const makeRemoteLoadSurveyResult = (id: string): LoadSurveyResult =>
+export const makeRemoteLoadSurveyResult = (id: string): RemoteLoadSurveyResult =>
   new RemoteLoadSurveyResult(makeApiUrl(`/surveys/${id}/results`), makeAuthHttpClientDecorator())

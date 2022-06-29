@@ -1,5 +1,5 @@
-import React from 'react'
 import Styles from './styles.scss'
+import React from 'react'
 
 type Props = React.HTMLAttributes<HTMLElement> & {
   isNegative?: boolean

@@ -1,11 +1,10 @@
-import React, { useContext, useEffect, useState } from 'react'
 import Styles from './styles.scss'
-import { LoginHeader as Header, Footer, Input, FormStatus } from '@presentation/components'
+import { Authentication } from '@domain/usecases'
+import { LoginHeader as Header, Footer, Input, FormStatus, SubmitButton } from '@presentation/components'
 import { FormContext, ApiContext } from '@presentation/contexts'
 import { Validation } from '@presentation/validation/protocols'
-import { Authentication } from '@domain/usecases'
 import { Link, useNavigate } from 'react-router-dom'
-import SubmitButton from '@presentation/components/submit-button'
+import React, { useContext, useEffect, useState } from 'react'
 
 type Props = {
   validation: Validation
