@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import Styles from './styles.scss'
-import { SurveyResultData } from './components'
+import { SurveyResultContext, SurveyResultData } from './components'
 import { Error, Footer, Header, Loading } from '@presentation/components'
-import { LoadSurveyResult } from '@domain/usecases'
+import { LoadSurveyResult, SaveSurveyResult } from '@domain/usecases'
 import { useErrorHandler } from '@presentation/hooks'
 
 const initialState = {
@@ -14,9 +14,10 @@ const initialState = {
 
 type Props = {
   loadSurveyResult: LoadSurveyResult
+  saveSurveyResult: SaveSurveyResult
 }
 
-const SurveyResult: React.FC<Props> = ({ loadSurveyResult }: Props) => {
+const SurveyResult: React.FC<Props> = ({ loadSurveyResult, saveSurveyResult }: Props) => {
   const [state, setState] = useState(initialState)
 
   useEffect(() => {
@@ -33,16 +34,23 @@ const SurveyResult: React.FC<Props> = ({ loadSurveyResult }: Props) => {
     setState(old => ({ surveyResult: undefined, error: '', reload: !old.reload, isLoading: false }))
   }
 
+  const onAnswer = (answer: string): void => {
+    setState(old => ({ ...old, isLoading: true }))
+    void saveSurveyResult.save({ answer }).then().catch()
+  }
+
   return (
-    <div className={Styles.surveyResultWrap}>
-      <Header />
-      <div role="survey-container" className={Styles.contentWrap}>
-        {state.surveyResult && <SurveyResultData surveyResult={state.surveyResult} />}
-        {state.isLoading && <Loading />}
-        {state.error && <Error error={state.error} reload={handleReload} />}
+    <SurveyResultContext.Provider value={{ onAnswer }}>
+      <div className={Styles.surveyResultWrap}>
+        <Header />
+        <div role="survey-container" className={Styles.contentWrap}>
+          {state.surveyResult && <SurveyResultData surveyResult={state.surveyResult} />}
+          {state.isLoading && <Loading />}
+          {state.error && <Error error={state.error} reload={handleReload} />}
+        </div>
+        <Footer />
       </div>
-      <Footer />
-    </div>
+    </SurveyResultContext.Provider>
   )
 }
 

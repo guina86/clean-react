@@ -3,13 +3,13 @@ import { HttpClient, HttpStatusCode } from '@data/protocols'
 import { AccessDeniedError, UnexpectedError } from '@domain/errors'
 import { SaveSurveyResult } from '@domain/usecases'
 
-export class RemoteSaveSurveyResult {
+export class RemoteSaveSurveyResult implements SaveSurveyResult {
   constructor (
     private readonly url: string,
     private readonly httpClient: HttpClient
   ) {}
 
-  async save (params: SaveSurveyResult.Params): Promise<void> {
+  async save (params: SaveSurveyResult.Params): Promise<SaveSurveyResult.Model> {
     const httpResponse = await this.httpClient.request({
       url: this.url,
       method: 'put',
