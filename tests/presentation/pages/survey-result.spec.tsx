@@ -5,12 +5,13 @@ import { ApiContext } from '@presentation/contexts'
 import { Router } from 'react-router-dom'
 import { createMemoryHistory, MemoryHistory } from 'history'
 import mock from 'jest-mock-extended/lib/Mock'
-import { LoadSurveyResult } from '@domain/usecases'
+import { LoadSurveyResult, SaveSurveyResult } from '@domain/usecases'
 import { mockSurveyResult } from '@tests/data/mocks/survey'
 import { AccessDeniedError, UnexpectedError } from '@domain/errors'
 
 describe('SurveyResult', () => {
   const loadSurveyResultSpy = mock<LoadSurveyResult>()
+  const saveSurveyResultSpy = mock<SaveSurveyResult>()
   let history: MemoryHistory
   const surveyResult = mockSurveyResult(new Date('2022-01-10T00:00:00'))
   const setCurrentAccountMock = jest.fn()
@@ -19,7 +20,9 @@ describe('SurveyResult', () => {
     render(
       <ApiContext.Provider value={{ getCurrentAccount: jest.fn(), setCurrentAccount: setCurrentAccountMock }}>
         <Router location={history.location} navigator={history}>
-          <SurveyResult loadSurveyResult={loadSurveyResultSpy} />
+          <SurveyResult
+            loadSurveyResult={loadSurveyResultSpy}
+            saveSurveyResult={saveSurveyResultSpy} />
         </Router>
       </ApiContext.Provider>
     )
@@ -28,6 +31,7 @@ describe('SurveyResult', () => {
 
   beforeAll(() => {
     loadSurveyResultSpy.load.mockResolvedValue(surveyResult)
+    saveSurveyResultSpy.save.mockResolvedValue(surveyResult)
   })
 
   beforeEach(() => {
@@ -115,5 +119,16 @@ describe('SurveyResult', () => {
     const answersWraps = screen.getAllByRole('answer-wrap')
     fireEvent.click(answersWraps[0])
     expect(screen.queryByRole('loading')).not.toBeInTheDocument()
+  })
+
+  it('should call SaveSurveyResult on non active answer click', async () => {
+    renderSut()
+    await screen.findByRole('question')
+    const answersWraps = screen.getAllByRole('answer-wrap')
+    fireEvent.click(answersWraps[1])
+    expect(screen.queryByRole('loading')).toBeInTheDocument()
+    expect(saveSurveyResultSpy.save).toHaveBeenCalledWith({
+      answer: surveyResult.answers[1].answer
+    })
   })
 })
