@@ -9,9 +9,11 @@
   padding: 2rem;
   border-radius: 1rem;
   margin-top: 1.6rem;
+  cursor: pointer;
 
   &.active {
     box-shadow: 0rem 0rem 0.3rem 0.2rem $primaryLight;
+    cursor: default;
   }
 
   img {
