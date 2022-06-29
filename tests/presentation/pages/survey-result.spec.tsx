@@ -6,7 +6,7 @@ import { Router } from 'react-router-dom'
 import { createMemoryHistory, MemoryHistory } from 'history'
 import mock from 'jest-mock-extended/lib/Mock'
 import { LoadSurveyResult, SaveSurveyResult } from '@domain/usecases'
-import { mockSurveyResult } from '@tests/data/mocks/survey'
+import { mockSurveyResult } from '@tests/data/mocks'
 import { AccessDeniedError, UnexpectedError } from '@domain/errors'
 
 describe('SurveyResult', () => {

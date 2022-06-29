@@ -3,7 +3,7 @@ import { fireEvent, render, screen, waitFor, waitForElementToBeRemoved } from '@
 import { SurveyList } from '@presentation/pages'
 import mock from 'jest-mock-extended/lib/Mock'
 import { LoadSurveyList } from '@domain/usecases'
-import { mockSurveyList } from '@tests/data/mocks/survey'
+import { mockSurveyList } from '@tests/data/mocks'
 import { AccessDeniedError, UnexpectedError } from '@domain/errors'
 import { ApiContext } from '@presentation/contexts'
 import { Router } from 'react-router-dom'

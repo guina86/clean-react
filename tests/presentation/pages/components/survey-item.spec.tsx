@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import React from 'react'
 import { SurveyItem } from '@presentation/pages/load-survey-list/components'
-import { mockSurvey } from '@tests/data/mocks/survey'
+import { mockSurvey } from '@tests/data/mocks'
 import { IconName } from '@presentation/components'
 import { LoadSurveyList } from '@domain/usecases'
 import { createMemoryHistory } from 'history'
