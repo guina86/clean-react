@@ -24,7 +24,7 @@ describe('SurveyResult', () => {
     cy.getByRole('question').should('exist')
   })
 
-  it('Should logouton AccessDeniedError', () => {
+  it('Should logout on AccessDeniedError', () => {
     mockApiError(/api\/surveys/, 'GET', 403)
     cy.visit('/surveys/any_id')
     testUrl('/login')
@@ -58,11 +58,19 @@ describe('SurveyResult', () => {
     testUrl('/')
   })
 
-  it.only('Should present error on UnexpectedError', () => {
+  it('Should present error if save survey return UnexpectedError', () => {
     mockApiSuccess(/api\/surveys/, 'GET', surveyResult)
     mockApiError(/api\/surveys/, 'PUT', 400)
     cy.visit('/surveys/any_id')
     cy.get('li:nth-child(2)').click()
     cy.getByRole('error-message').should('contain.text', 'Algo de errado aconteceu. Tente novamente em breve.')
+  })
+
+  it('Should logout if save survey return AccessDeniedError', () => {
+    mockApiSuccess(/api\/surveys/, 'GET', surveyResult)
+    mockApiError(/api\/surveys/, 'PUT', 403)
+    cy.visit('/surveys/any_id')
+    cy.get('li:nth-child(2)').click()
+    testUrl('/login')
   })
 })
