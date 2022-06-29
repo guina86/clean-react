@@ -3,9 +3,11 @@ import { mockApiError, mockApiSuccess } from '../utils/http-mock'
 
 describe('SurveyResult', () => {
   let surveyResult: any
+  let surveyResultAlt: any
 
   beforeEach(function () {
     cy.fixture('survey-result').then((data) => { surveyResult = data })
+    cy.fixture('survey-result-alt').then((data) => { surveyResultAlt = data })
     setLocalStorageItem('account', { accessToken: 'any_token', name: 'any_name' })
   })
 
@@ -72,5 +74,20 @@ describe('SurveyResult', () => {
     cy.visit('/surveys/any_id')
     cy.get('li:nth-child(2)').click()
     testUrl('/login')
+  })
+
+  it.only('Should logout if save survey return AccessDeniedError', () => {
+    mockApiSuccess(/api\/surveys/, 'GET', surveyResult)
+    mockApiSuccess(/api\/surveys/, 'PUT', surveyResultAlt).as('request')
+    cy.visit('/surveys/any_id')
+    cy.get('li:nth-child(2)').click()
+    cy.wait('@request')
+    cy.get('li:nth-child(1)').then(li => {
+      assert.equal(li.find('[role="answer-percent"]').text(), '50%')
+    })
+    cy.get('li:nth-child(2)').then(li => {
+      assert.equal(li.find('[role="answer-percent"]').text(), '50%')
+      assert.equal(li.css('box-shadow'), 'rgb(188, 71, 123) 0px 0px 3px 2px')
+    })
   })
 })
