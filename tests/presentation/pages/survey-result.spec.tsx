@@ -1,5 +1,5 @@
 import React from 'react'
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor, waitForElementToBeRemoved } from '@testing-library/react'
 import { SurveyResult } from '@presentation/pages'
 import { ApiContext } from '@presentation/contexts'
 import { Router } from 'react-router-dom'
@@ -16,7 +16,7 @@ describe('SurveyResult', () => {
   const surveyResult = mockSurveyResult(new Date('2022-01-10T00:00:00'))
   const setCurrentAccountMock = jest.fn()
 
-  const renderSut = (date?: Date): LoadSurveyResult.Model => {
+  const renderSut = (): void => {
     render(
       <ApiContext.Provider value={{ getCurrentAccount: jest.fn(), setCurrentAccount: setCurrentAccountMock }}>
         <Router location={history.location} navigator={history}>
@@ -26,7 +26,6 @@ describe('SurveyResult', () => {
         </Router>
       </ApiContext.Provider>
     )
-    return surveyResult
   }
 
   beforeAll(() => {
@@ -55,7 +54,7 @@ describe('SurveyResult', () => {
   })
 
   it('should present SurveyResult data on success', async () => {
-    const surveyResult = renderSut()
+    renderSut()
     await screen.findByRole('date-day')
     expect(screen.getByRole('date-day')).toHaveTextContent('10')
     expect(screen.getByRole('date-month')).toHaveTextContent('jan')
@@ -130,6 +129,7 @@ describe('SurveyResult', () => {
     expect(saveSurveyResultSpy.save).toHaveBeenCalledWith({
       answer: surveyResult.answers[1].answer
     })
+    await waitForElementToBeRemoved(screen.queryByRole('loading'))
   })
 
   it('should render error on UnexpectedError', async () => {
@@ -145,7 +145,7 @@ describe('SurveyResult', () => {
     expect(errorComponent).toHaveTextContent(error.message)
   })
 
-  it('should render error on AccessDeniedError', async () => {
+  it('should logout on AccessDeniedError', async () => {
     const error = new AccessDeniedError()
     saveSurveyResultSpy.save.mockRejectedValueOnce(error)
     renderSut()
@@ -157,5 +157,32 @@ describe('SurveyResult', () => {
     })
     expect(setCurrentAccountMock).toHaveBeenCalledWith(undefined)
     expect(setCurrentAccountMock).toHaveBeenCalledTimes(1)
+  })
+
+  it('should present SurveyResult data on SaveSurveyResult success', async () => {
+    const newResult = { ...surveyResult, answers: [{ ...surveyResult.answers[0] }, { ...surveyResult.answers[1] }] }
+    newResult.answers[0].isCurrentAccountAnswer = false
+    newResult.answers[0].percent = 0
+    newResult.answers[1].isCurrentAccountAnswer = true
+    newResult.answers[1].percent = 100
+    saveSurveyResultSpy.save.mockResolvedValueOnce(newResult)
+
+    renderSut()
+    let answersWraps = await screen.findAllByRole('answer-wrap')
+    expect(answersWraps[0]).toHaveClass('active')
+    expect(answersWraps[1]).not.toHaveClass('active')
+    let percents = screen.getAllByRole('answer-percent')
+    expect(percents[0]).toHaveTextContent('100%')
+    expect(percents[1]).toHaveTextContent('0%')
+
+    fireEvent.click(answersWraps[1])
+    await waitForElementToBeRemoved(screen.queryByRole('loading'))
+    answersWraps = screen.getAllByRole('answer-wrap')
+    expect(answersWraps[0]).not.toHaveClass('active')
+    expect(answersWraps[1]).toHaveClass('active')
+    percents = screen.getAllByRole('answer-percent')
+    expect(percents[0]).toHaveTextContent('0%')
+    expect(percents[1]).toHaveTextContent('100%')
+    expect(screen.queryByRole('loading')).not.toBeInTheDocument()
   })
 })

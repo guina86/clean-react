@@ -1,7 +1,7 @@
 import { createContext } from 'react'
 
 type Props = {
-  onAnswer: (answer: string) => void
+  onAnswer?: (answer: string) => void
 }
 
-export default createContext<Props>({ onAnswer: () => {} })
+export default createContext<Props>({})
