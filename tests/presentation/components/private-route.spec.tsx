@@ -1,14 +1,14 @@
-import React from 'react'
-import { Route, Router, Routes } from 'react-router-dom'
-import { render } from '@testing-library/react'
-import PrivateRoute from '@presentation/components/private-route'
-import { createMemoryHistory, MemoryHistory } from 'history'
+import { PrivateRoute } from '@presentation/components'
 import { ApiContext } from '@presentation/contexts'
 import { AccountModel } from '@domain/model'
+import { render } from '@testing-library/react'
+import { createMemoryHistory, MemoryHistory } from 'history'
+import { Route, Router, Routes } from 'react-router-dom'
+import React from 'react'
 
 describe('PrivateRoute', () => {
   let history: MemoryHistory
-  const prepare = (account: AccountModel | null): void => {
+  const renderSut = (account: AccountModel | null): void => {
     render(
       <ApiContext.Provider value={{ getCurrentAccount: () => account }} >
         <Router location={history.location} navigator={history}>
@@ -27,13 +27,13 @@ describe('PrivateRoute', () => {
   })
 
   it('should redirect to /login if token is empty', () => {
-    prepare(null)
+    renderSut(null)
 
     expect(history.location.pathname).toBe('/login')
   })
 
   it('should render current component if token is not empty', () => {
-    prepare({ accessToken: 'any_token', name: 'any_name' })
+    renderSut({ accessToken: 'any_token', name: 'any_name' })
 
     expect(history.location.pathname).toBe('/')
   })

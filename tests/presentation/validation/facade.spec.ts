@@ -1,4 +1,10 @@
-import { EmailValidation, RequiredFieldValidation, ValidationBuilder, ValidationComposite, ValidationFacade } from '@presentation/validation/validators'
+import {
+  EmailValidation,
+  RequiredFieldValidation,
+  ValidationBuilder,
+  ValidationComposite,
+  ValidationFacade
+} from '@presentation/validation/validators'
 
 describe('ValidationFacade', () => {
   it('should return a ValidationBuilder after a field()', () => {

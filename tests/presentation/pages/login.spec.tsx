@@ -1,71 +1,69 @@
-import React from 'react'
-import { Router } from 'react-router-dom'
-import { render, fireEvent, waitFor, screen } from '@testing-library/react'
-import { createMemoryHistory } from 'history'
+import { Login } from '@presentation/pages'
 import { ApiContext } from '@presentation/contexts'
-import mock from 'jest-mock-extended/lib/Mock'
-import { faker } from '@faker-js/faker'
-import Login from '@presentation/pages/login'
 import { Validation } from '@presentation/validation/protocols'
 import { Authentication } from '@domain/usecases'
 import { InvalidCredentialsError } from '@domain/errors'
-import { actSubmit, arrangeEmail, arrangeLoginInputs, arrangePassword, testStatusForField } from '@tests/presentation/pages/helpers'
+import * as helper from '@tests/presentation/pages/helpers'
+import { render, fireEvent, waitFor, screen, RenderResult } from '@testing-library/react'
+import { faker } from '@faker-js/faker'
+import { createMemoryHistory, MemoryHistory } from 'history'
+import { mock } from 'jest-mock-extended'
+import { Router } from 'react-router-dom'
+import React from 'react'
 
 describe('Login Component', () => {
-  const history = createMemoryHistory({ initialEntries: ['/login'] })
-  const errorMessage = faker.random.words(2)
-  const accessToken = faker.datatype.uuid()
-  const name = faker.name.findName()
-  const account = { accessToken, name }
+  const renderSut = (): RenderResult => render(
+    <ApiContext.Provider value={{ setCurrentAccount: setCurrentAccountMock }}>
+      <Router location={history.location} navigator={history}>
+        <Login
+          validation={validationSpy}
+          authentication={authenticationSpy}
+        />
+      </Router>
+    </ApiContext.Provider>
+  )
+  let history: MemoryHistory
   const validationSpy = mock<Validation>()
   const authenticationSpy = mock<Authentication>()
+  const errorMessage = faker.random.words(2)
+  const account = { accessToken: faker.datatype.uuid(), name: faker.name.findName() }
   const setCurrentAccountMock = jest.fn()
 
   beforeAll(() => {
-    validationSpy.validate.mockReturnValue(errorMessage)
     authenticationSpy.auth.mockResolvedValue(account)
   })
 
   beforeEach(() => {
     jest.clearAllMocks()
-    render(
-      <ApiContext.Provider value={{ setCurrentAccount: setCurrentAccountMock }}>
-        <Router location={history.location} navigator={history}>
-          <Login
-            validation={validationSpy}
-            authentication={authenticationSpy}
-          />
-        </Router>
-      </ApiContext.Provider>
-    )
     validationSpy.validate.mockReturnValue('')
+    history = createMemoryHistory({ initialEntries: ['/login'] })
   })
 
   it('should start with initial state', async () => {
-    const statusWrap = screen.getByRole('status-wrap')
-    const submitbutton = await screen.findByRole('button')
-    const emailInput = screen.getByRole('email-input')
-    const emailLabel = screen.getByRole('email-label')
-    const passwordInput = screen.getByRole('password-input')
-    const passwordLabel = screen.getByRole('password-label')
+    validationSpy.validate.mockReturnValue(errorMessage)
+    renderSut()
 
-    expect(statusWrap.childElementCount).toBe(0)
-    expect(submitbutton).toBeDisabled()
-    expect(emailInput).toHaveAttribute('title', errorMessage)
-    expect(emailLabel).toHaveAttribute('title', errorMessage)
-    expect(passwordInput).toHaveAttribute('title', errorMessage)
-    expect(passwordLabel).toHaveAttribute('title', errorMessage)
+    expect(screen.getByRole('status-wrap').childElementCount).toBe(0)
+    expect(screen.getByRole('button')).toBeDisabled()
+    expect(screen.getByRole('email-input')).toHaveAttribute('title', errorMessage)
+    expect(screen.getByRole('email-label')).toHaveAttribute('title', errorMessage)
+    expect(screen.getByRole('password-input')).toHaveAttribute('title', errorMessage)
+    expect(screen.getByRole('password-label')).toHaveAttribute('title', errorMessage)
   })
 
   it('should call validation with correct email', () => {
-    const email = arrangeEmail()
+    renderSut()
+
+    const email = helper.arrangeEmail()
     const input = { email: email, password: '' }
 
     expect(validationSpy.validate).toHaveBeenCalledWith('email', input)
   })
 
   it('should call validation with correct password', () => {
-    const password = arrangePassword()
+    renderSut()
+
+    const password = helper.arrangePassword()
     const input = { email: '', password: password }
 
     expect(validationSpy.validate).toHaveBeenCalledWith('password', input)
@@ -73,59 +71,79 @@ describe('Login Component', () => {
 
   it('should show email error if Validation fails', () => {
     validationSpy.validate.mockReturnValue(errorMessage)
-    arrangeEmail()
-    testStatusForField('email', errorMessage, 'invalid')
+    renderSut()
+
+    helper.arrangeEmail()
+
+    helper.testStatusForField('email', errorMessage, 'invalid')
   })
 
   it('should show password error if Validation fails', () => {
     validationSpy.validate.mockReturnValue(errorMessage)
-    arrangePassword()
-    testStatusForField('password', errorMessage, 'invalid')
+    renderSut()
+
+    helper.arrangePassword()
+
+    helper.testStatusForField('password', errorMessage, 'invalid')
   })
 
   it('should show valid email state if Validation succeeds', () => {
-    arrangeEmail()
-    testStatusForField('email', '', 'valid')
+    renderSut()
+
+    helper.arrangeEmail()
+
+    helper.testStatusForField('email', '', 'valid')
   })
 
   it('should show valid password state if Validation succeeds', () => {
-    arrangePassword()
-    testStatusForField('password', '', 'valid')
+    renderSut()
+
+    helper.arrangePassword()
+
+    helper.testStatusForField('password', '', 'valid')
   })
 
   it('should enable submit button if form is valid', () => {
-    arrangeLoginInputs()
-    const submitButton = screen.getByRole('button')
+    renderSut()
 
-    expect(submitButton).toBeEnabled()
+    helper.arrangeLoginInputs()
+
+    expect(screen.getByRole('button')).toBeEnabled()
   })
 
   it('should show spinner on submit', async () => {
-    arrangeLoginInputs()
-    actSubmit()
-    const spinner = await screen.findByRole('progressbar')
+    renderSut()
 
-    expect(spinner).toBeTruthy()
+    helper.arrangeLoginInputs()
+    helper.actSubmit()
+
+    expect(screen.getByRole('progressbar')).toBeInTheDocument()
   })
 
   it('should call Authentication with correct values', async () => {
-    const params = arrangeLoginInputs()
-    actSubmit()
+    renderSut()
+
+    const params = helper.arrangeLoginInputs()
+    helper.actSubmit()
 
     expect(authenticationSpy.auth).toHaveBeenCalledWith(params)
   })
 
   it('should call Authentication only once', async () => {
-    arrangeLoginInputs()
-    actSubmit()
-    actSubmit()
+    renderSut()
+
+    helper.arrangeLoginInputs()
+    helper.actSubmit()
+    helper.actSubmit()
 
     expect(authenticationSpy.auth).toHaveBeenCalledTimes(1)
   })
 
   it('should not call Authentication if form is not valid', async () => {
     validationSpy.validate.mockReturnValue(errorMessage)
-    arrangeEmail()
+    renderSut()
+
+    helper.arrangeEmail()
     fireEvent.submit(screen.getByRole('form'))
 
     expect(authenticationSpy.auth).toHaveBeenCalledTimes(0)
@@ -134,28 +152,30 @@ describe('Login Component', () => {
   it('should present error if Authentication fails', async () => {
     const error = new InvalidCredentialsError()
     authenticationSpy.auth.mockRejectedValueOnce(error)
-    arrangeLoginInputs()
-    actSubmit()
-    const statusWrap = screen.getByRole('status-wrap')
-    const mainError = await screen.findByRole('error-message')
+    renderSut()
 
-    expect(mainError).toHaveTextContent(error.message)
-    expect(statusWrap.children).toHaveLength(1)
+    helper.arrangeLoginInputs()
+    helper.actSubmit()
+
+    expect(await screen.findByRole('error-message')).toHaveTextContent(error.message)
+    expect(screen.getByRole('status-wrap').children).toHaveLength(1)
   })
 
   it('should call SaveAccessToken on success', async () => {
-    arrangeLoginInputs()
-    actSubmit()
-    await waitFor(async () => screen.getByRole('form'))
+    renderSut()
 
-    expect(setCurrentAccountMock).toHaveBeenCalledWith(account)
+    helper.arrangeLoginInputs()
+    helper.actSubmit()
+
+    await waitFor(() => expect(history.location.pathname).toBe('/'))
     expect(history.index).toBe(0)
-    expect(history.location.pathname).toBe('/')
+    expect(setCurrentAccountMock).toHaveBeenCalledWith(account)
   })
 
   it('should go to signup page', async () => {
-    const register = screen.getByRole('register-link')
-    fireEvent.click(register)
+    renderSut()
+
+    fireEvent.click(screen.getByRole('register-link'))
 
     expect(history.index).toBe(0)
     expect(history.location.pathname).toBe('/signup')

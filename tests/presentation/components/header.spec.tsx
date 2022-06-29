@@ -1,10 +1,10 @@
-import { fireEvent, render, screen } from '@testing-library/react'
-import React from 'react'
-import Header from '@presentation/components/header'
+import { Header } from '@presentation/components'
 import { ApiContext } from '@presentation/contexts'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { createMemoryHistory, MemoryHistory } from 'history'
-import { Router } from 'react-router-dom'
 import { faker } from '@faker-js/faker'
+import { Router } from 'react-router-dom'
+import React from 'react'
 
 describe('Header', () => {
   let history: MemoryHistory
@@ -27,7 +27,9 @@ describe('Header', () => {
 
   it('should call setCurrentAccount with null', () => {
     renderSut()
+
     fireEvent.click(screen.getByRole('logout'))
+
     expect(setCurrentAccountMock).toHaveBeenCalledWith(undefined)
     expect(setCurrentAccountMock).toHaveBeenCalledTimes(1)
     expect(history.location.pathname).toBe('/login')
@@ -36,7 +38,9 @@ describe('Header', () => {
   it('should render username correctly', () => {
     const account = { accessToken: faker.datatype.uuid(), name: faker.name.findName() }
     getCurrentAccountMock.mockReturnValueOnce(account)
+
     renderSut()
+
     expect(screen.getByRole('username')).toHaveTextContent(account.name)
   })
 })

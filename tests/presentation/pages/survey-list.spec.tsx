@@ -1,27 +1,25 @@
-import React from 'react'
-import { fireEvent, render, screen, waitFor, waitForElementToBeRemoved } from '@testing-library/react'
 import { SurveyList } from '@presentation/pages'
-import mock from 'jest-mock-extended/lib/Mock'
-import { LoadSurveyList } from '@domain/usecases'
-import { mockSurveyList } from '@tests/data/mocks'
-import { AccessDeniedError, UnexpectedError } from '@domain/errors'
 import { ApiContext } from '@presentation/contexts'
+import { LoadSurveyList } from '@domain/usecases'
+import { AccessDeniedError, UnexpectedError } from '@domain/errors'
+import { mockSurveyList } from '@tests/data/mocks'
+import { fireEvent, render, RenderResult, screen, waitFor, waitForElementToBeRemoved } from '@testing-library/react'
+import { createMemoryHistory, MemoryHistory } from 'history'
+import { mock } from 'jest-mock-extended'
 import { Router } from 'react-router-dom'
-import { createMemoryHistory } from 'history'
+import React from 'react'
 
 describe('SurveyList', () => {
+  const renderSut = (): RenderResult => render(
+    <ApiContext.Provider value={{ getCurrentAccount: jest.fn(), setCurrentAccount: setCurrentAccountMock }}>
+      <Router location={history.location} navigator={history}>
+        <SurveyList loadSurveyList={loadSurveyListSpy} />
+      </Router>
+    </ApiContext.Provider>
+  )
+  let history: MemoryHistory
   const loadSurveyListSpy = mock<LoadSurveyList>()
-  const history = createMemoryHistory({ initialEntries: ['/'] })
   const setCurrentAccountMock = jest.fn()
-  const renderSut = (): void => {
-    render(
-      <ApiContext.Provider value={{ getCurrentAccount: jest.fn(), setCurrentAccount: setCurrentAccountMock }}>
-        <Router location={history.location} navigator={history}>
-          <SurveyList loadSurveyList={loadSurveyListSpy} />
-        </Router>
-      </ApiContext.Provider>
-    )
-  }
 
   beforeAll(() => {
     loadSurveyListSpy.loadAll.mockResolvedValue(mockSurveyList())
@@ -29,10 +27,12 @@ describe('SurveyList', () => {
 
   beforeEach(() => {
     jest.clearAllMocks()
+    history = createMemoryHistory({ initialEntries: ['/'] })
   })
 
-  it('should present 4 empty items on start', async () => {
+  it.only('should present 4 empty items on start', async () => {
     renderSut()
+
     const surveyList = screen.getByRole('survey-list')
     expect(surveyList.querySelectorAll('li:empty')).toHaveLength(4)
     expect(screen.queryByRole('error-message')).not.toBeInTheDocument()
