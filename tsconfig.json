@@ -10,7 +10,7 @@
     "module": "esnext",
     "moduleResolution": "node",
     "jsx": "react",
-    "rootDirs": ["src", "tests", "cypress"],
+    "rootDirs": ["src", "tests"],
     "baseUrl": "src",
     "paths": {
       "@domain/*": ["domain/*"],
@@ -23,5 +23,6 @@
     "allowJs": true,
     "strict": true,
   },
-  "include": ["src", "tests", "cypress", "./cypress.config.ts"]
+  "include": ["src", "tests"],
+  "exclude": ["tests/cypress"]
 }

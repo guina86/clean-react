@@ -76,7 +76,7 @@ describe('SurveyResult', () => {
     testUrl('/login')
   })
 
-  it.only('Should logout if save survey return AccessDeniedError', () => {
+  it('Should logout if save survey return AccessDeniedError', () => {
     mockApiSuccess(/api\/surveys/, 'GET', surveyResult)
     mockApiSuccess(/api\/surveys/, 'PUT', surveyResultAlt).as('request')
     cy.visit('/surveys/any_id')
