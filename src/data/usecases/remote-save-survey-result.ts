@@ -16,7 +16,7 @@ export class RemoteSaveSurveyResult {
       body: params
     })
     switch (httpResponse.statusCode) {
-      case HttpStatusCode.ok: break
+      case HttpStatusCode.ok: return { ...httpResponse.body, date: new Date(httpResponse.body?.date) }
       case HttpStatusCode.forbidden: throw new AccessDeniedError()
       default: throw new UnexpectedError()
     }
