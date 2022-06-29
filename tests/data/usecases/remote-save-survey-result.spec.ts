@@ -1,5 +1,6 @@
-import { HttpClient } from '@data/protocols'
+import { HttpClient, HttpStatusCode } from '@data/protocols'
 import { RemoteSaveSurveyResult } from '@data/usecases'
+import { AccessDeniedError } from '@domain/errors'
 import { faker } from '@faker-js/faker'
 import { mock } from 'jest-mock-extended'
 import { mockRemoteSurveyResult } from '../mocks/survey'
@@ -18,5 +19,12 @@ describe('RemoteSaveSurveyResult', () => {
     const sut = makeSut()
     await sut.save({ answer: 'any_answer' })
     expect(httpClientSpy.request).toHaveBeenCalledWith({ url, body: { answer: 'any_answer' }, method: 'put' })
+  })
+
+  it('should throw AccessDeniedError if HttpClient returns 403', async () => {
+    httpClientSpy.request.mockResolvedValueOnce({ statusCode: HttpStatusCode.forbidden })
+    const sut = makeSut()
+    const promise = sut.save({ answer: 'any_answer' })
+    await expect(promise).rejects.toThrow(new AccessDeniedError())
   })
 })
