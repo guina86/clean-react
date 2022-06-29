@@ -131,4 +131,17 @@ describe('SurveyResult', () => {
       answer: surveyResult.answers[1].answer
     })
   })
+
+  it('should render error on UnexpectedError', async () => {
+    const error = new UnexpectedError()
+    saveSurveyResultSpy.save.mockRejectedValueOnce(error)
+    renderSut()
+    await screen.findByRole('question')
+    const answersWraps = screen.getAllByRole('answer-wrap')
+    fireEvent.click(answersWraps[1])
+    const errorComponent = await screen.findByRole('error-message')
+    expect(screen.queryByRole('question')).not.toBeInTheDocument()
+    expect(screen.queryByRole('loading')).not.toBeInTheDocument()
+    expect(errorComponent).toHaveTextContent(error.message)
+  })
 })
