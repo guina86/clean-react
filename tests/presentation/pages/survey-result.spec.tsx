@@ -185,4 +185,13 @@ describe('SurveyResult', () => {
     expect(percents[1]).toHaveTextContent('100%')
     expect(screen.queryByRole('loading')).not.toBeInTheDocument()
   })
+
+  it('should prevent multiple answer clicks', async () => {
+    renderSut()
+    const answersWraps = await screen.findAllByRole('answer-wrap')
+    fireEvent.click(answersWraps[1])
+    fireEvent.click(answersWraps[1])
+    await waitForElementToBeRemoved(screen.queryByRole('loading'))
+    expect(saveSurveyResultSpy.save).toHaveBeenCalledTimes(1)
+  })
 })
