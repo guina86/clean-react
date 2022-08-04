@@ -39,7 +39,7 @@ module.exports = merge(common, {
   },
   plugins: [
     new DefinePlugin({
-      'process.env.API_URL': JSON.stringify('https://guina-node-api.herokuapp.com/api')
+      'process.env.API_URL': JSON.stringify('http://localhost:5050/api')
     }),
     new HtmlWebpackPlugin({
       template: './template.dev.html',
